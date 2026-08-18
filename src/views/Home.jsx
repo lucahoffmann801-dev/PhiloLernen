@@ -1,21 +1,56 @@
 import React from "react";
-import { useStore, QUESTS } from "../lib/store.jsx";
+import { useStore, QUESTS, todayKey } from "../lib/store.jsx";
 import { Ring } from "../lib/ui.jsx";
 import { LEVELS, PLAN } from "../data/meta.js";
 import { WORLDS } from "../data/content.js";
 
-export default function Home({ openPlayer, openBlitz, goto, openTimer }) {
-  const { s, d, toggleCheck } = useStore();
+const OWL_TIPS = [
+  "Kleine Schritte zählen doppelt. Eine Lektion reicht, um den Tag zu gewinnen.",
+  "Sichere Fehler sind Gold wert. Trau dich, „Sicher“ zu tippen!",
+  "Die Klausur fragt Zusammenhänge. Der Rote Faden ist dein Freund.",
+  "Erst raten, dann lernen: Dein Gehirn merkt sich Auflösungen besser.",
+  "Begründung laut sagen schlägt stilles Nicken. Immer.",
+];
+
+function owlState({ d, s, frozenOnLoad }) {
+  if (frozenOnLoad > 0) return ["🧊", `Ich habe deine Serie mit ${frozenOnLoad === 1 ? "einem Schoner" : frozenOnLoad + " Schonern"} gerettet. Weiter geht's, als wäre nichts gewesen!`];
+  if (frozenOnLoad === -1) return ["🤗", "Die Serie ist neu gestartet. Völlig okay, dein Wissen ist ja noch da. Heute zählt nur der nächste kleine Schritt."];
+  if (d.todayXp >= d.dailyGoal) return ["🥳", "Tagesziel geschafft! Alles ab jetzt ist Bonus. Ich bin stolz wie Bolle."];
+  if (d.todayStats.t === 0 && d.todayStats.l === 0) return ["😴", "Ich döse noch... Ein Warmstart mit 3 Karten und wir sind beide wach."];
+  const day = new Date().getDate();
+  return ["🦉", OWL_TIPS[day % OWL_TIPS.length]];
+}
+
+export default function Home({ openPlayer, openBlitz, openExam, goto, openTimer, startWarmstart }) {
+  const { s, d, toggleCheck, frozenOnLoad } = useStore();
   const next = d.next;
   const lvl = LEVELS[d.level];
   const nxtLvl = d.nextLevel;
+  const [owlFace, owlLine] = owlState({ d, s, frozenOnLoad });
 
   const start = new Date(2026, 7, 18).getTime();
   const idx = Math.max(0, Math.min(PLAN.length - 1, Math.round((Date.now() - start) / 864e5)));
   const plan = PLAN[idx];
+  const showWarm = d.todayStats.t === 0 && d.warmstart.length > 0;
 
   return (
     <div className="view wrap">
+      <div className="owlrow">
+        <span className="owl">{owlFace}</span>
+        <span className="bubble">{owlLine}</span>
+      </div>
+
+      {showWarm && (
+        <button className="warmcard" onClick={startWarmstart}>
+          <span className="em">☀️</span>
+          <span style={{ flex: 1 }}>
+            <b>Warmstart: 3 Karten, 60 Sekunden</b>
+            <span>Deine wackligsten Karten von zuletzt. Der leichteste Einstieg in den Tag.</span>
+          </span>
+          <span style={{ fontSize: 18 }}>→</span>
+        </button>
+      )}
+
       <div className="hero-next">
         <span className="tag">Dein nächster Schritt</span>
         {next ? (
@@ -36,7 +71,7 @@ export default function Home({ openPlayer, openBlitz, goto, openTimer }) {
         ) : (
           <>
             <h1>Alles durchgespielt 👑</h1>
-            <p className="muted small">Jetzt zählt Wiederholung: Training und Blitzrunden halten alles frisch.</p>
+            <p className="muted small">Jetzt zählt Wiederholung: Training, Blitzrunden und die Generalprobe.</p>
             <button className="btn" style={{ marginTop: 16 }} onClick={() => goto("training")}>Ins Training →</button>
           </>
         )}
@@ -61,14 +96,21 @@ export default function Home({ openPlayer, openBlitz, goto, openTimer }) {
 
       <div className="actionrow">
         <button className="action" onClick={openBlitz}>
-          <span className="em">⚡</span>
-          <b>Blitzrunde</b>
-          <span>90 Sekunden, automatisch geprüft</span>
+          <span className="em">⚡</span><b>Blitzrunde</b>
+          <span>90 Sek., automatisch geprüft</span>
+        </button>
+        <button className="action" onClick={openExam}>
+          <span className="em">🎓</span><b>Generalprobe</b>
+          <span>20 Fragen, 25 Min, echte Punkte{s.probeBest ? ` · Best: ${Math.round(s.probeBest.pct * 100)} %` : ""}</span>
         </button>
         <button className="action" onClick={openTimer}>
-          <span className="em">🎯</span>
-          <b>Fokus-Timer</b>
+          <span className="em">🎯</span><b>Fokus-Timer</b>
           <span>Kurzer Block, sichtbare Zeit</span>
+        </button>
+        <button className="action" onClick={() => goto("training")}
+          style={d.inbox.length ? { borderColor: "#f3c6c8" } : {}}>
+          <span className="em">📮</span><b>Fehler-Postfach</b>
+          <span>{d.inbox.length ? `${d.inbox.length} Karten warten` : "leer, stark!"}</span>
         </button>
       </div>
 
@@ -91,7 +133,7 @@ export default function Home({ openPlayer, openBlitz, goto, openTimer }) {
       {d.dueCount > 0 && (
         <button className="card" style={{ width: "100%", textAlign: "left", display: "flex", gap: 12, alignItems: "center", marginBottom: 12 }}
           onClick={() => goto("training")}>
-          <span style={{ fontSize: 22 }}>📬</span>
+          <span style={{ fontSize: 22 }}>🃏</span>
           <span style={{ flex: 1, minWidth: 0 }}>
             <b>{d.dueCount} Karten fällig</b>
             <span className="small muted" style={{ display: "block" }}>Kurz wiederholen. 5 Minuten reichen.</span>
@@ -121,17 +163,41 @@ export default function Home({ openPlayer, openBlitz, goto, openTimer }) {
 
       <div className="card">
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-          <h3 style={{ fontSize: 15 }}>Gesamtfortschritt</h3>
-          <span className="small muted mono">{Math.round(d.globalMastery * 100)} % gefestigt</span>
+          <h3 style={{ fontSize: 15 }}>Deine 13 Tage</h3>
+          <span className="small muted mono">{Math.round(d.globalMastery * 100)} % sitzt</span>
         </div>
         <div className="pbar" style={{ height: 9 }}>
           <i style={{ width: d.globalMastery * 100 + "%", background: "linear-gradient(90deg,var(--acc),var(--mint))" }} />
         </div>
+        <Heatmap dayXp={s.dayXp} />
         <p className="small muted" style={{ marginTop: 10 }}>
-          {WORLDS.filter(w => d.worldProgress(w).mastered).length} von {WORLDS.length} Kapiteln gemeistert ·
-          Serie {s.streak} {s.streak > 0 && "🔥"} · Rekord {s.bestStreak}
+          {WORLDS.filter(w => d.worldProgress(w).mastered).length}/{WORLDS.length} Kapitel gemeistert ·
+          Serie {s.streak} {s.streak > 0 && "🔥"} · {d.freezesLeft} Serien-Schoner 🧊 übrig
+        </p>
+        <p className="small muted" style={{ marginTop: 4 }}>
+          Heute: {d.todayStats.t} Karten · {d.todayStats.l} Lektionen · {d.todayStats.b} Blitzrunden · {d.todayXp} XP
         </p>
       </div>
+    </div>
+  );
+}
+
+// 13-Tage-Aktivitätskalender: das Muster zählt, nicht der einzelne Tag.
+function Heatmap({ dayXp }) {
+  const days = Array.from({ length: 13 }, (_, i) => {
+    const dt = new Date(2026, 7, 18 + i);
+    const key = dt.toISOString().slice(0, 10);
+    const xp = dayXp[key] ?? 0;
+    const lvl = xp >= 80 ? 4 : xp >= 50 ? 3 : xp >= 20 ? 2 : xp > 0 ? 1 : 0;
+    return { d: dt.getDate(), key, lvl, today: key === todayKey() };
+  });
+  return (
+    <div className="heatmap">
+      {days.map(x => (
+        <div key={x.key} className={"hd l" + x.lvl + (x.today ? " today" : "")} title={x.key}>
+          <span>{x.d}</span>
+        </div>
+      ))}
     </div>
   );
 }

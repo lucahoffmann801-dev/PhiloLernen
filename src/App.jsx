@@ -9,6 +9,8 @@ import Threads from "./views/Threads.jsx";
 import More from "./views/More.jsx";
 import Player from "./views/Player.jsx";
 import Blitz from "./views/Blitz.jsx";
+import Exam from "./views/Exam.jsx";
+import { fxLevel } from "./lib/fx.js";
 
 const NAV = [
   ["home", "Heute", "M12 3l9 8h-3v9h-5v-6h-2v6H6v-9H3z"],
@@ -23,6 +25,8 @@ export default function App() {
   const [view, setView] = useState("home");
   const [session, setSession] = useState(null);
   const [blitz, setBlitz] = useState(false);
+  const [exam, setExam] = useState(false);
+  const [trainPreset, setTrainPreset] = useState(null);
   const [toastNode, toast] = useToast();
   const [, tick] = useState(0);
   useEffect(() => { const t = setInterval(() => tick(x => x + 1), 30000); return () => clearInterval(t); }, []);
@@ -31,7 +35,7 @@ export default function App() {
   const [levelUp, setLevelUp] = useState(null);
   const prevLevel = useRef(d.level);
   useEffect(() => {
-    if (d.level > prevLevel.current) setLevelUp(LEVELS[d.level].title);
+    if (d.level > prevLevel.current) { setLevelUp(LEVELS[d.level].title); fxLevel(); }
     prevLevel.current = d.level;
   }, [d.level]);
 
@@ -78,14 +82,17 @@ export default function App() {
       </header>
 
       {view === "home" && <Home openPlayer={setSession} openBlitz={() => setBlitz(true)}
-        goto={setView} openTimer={() => setTimerOpen(true)} />}
+        openExam={() => setExam(true)} goto={setView} openTimer={() => setTimerOpen(true)}
+        startWarmstart={() => { setTrainPreset({ ids: d.warmstart }); setView("training"); }} />}
       {view === "path" && <Path openPlayer={setSession} />}
-      {view === "training" && <Training openBlitz={() => setBlitz(true)} />}
+      {view === "training" && <Training key={trainPreset ? "warm" : "std"} openBlitz={() => setBlitz(true)}
+        preset={trainPreset} onPresetUsed={() => setTrainPreset(null)} />}
       {view === "threads" && <Threads />}
       {view === "more" && <More toast={toast} />}
 
       {session && <Player session={session} onClose={() => setSession(null)} />}
       {blitz && <Blitz onClose={() => setBlitz(false)} />}
+      {exam && <Exam onClose={() => setExam(false)} />}
 
       {timerOpen && (
         <>
@@ -130,7 +137,7 @@ export default function App() {
         </>
       )}
 
-      {levelUp && (
+      {levelUp && !session && !blitz && !exam && (
         <div className="levelup" onClick={() => setLevelUp(null)}>
           <div className="box">
             <div className="big">🎓</div>
@@ -146,7 +153,7 @@ export default function App() {
         <div className="row">
           {NAV.map(([id, label, path]) => (
             <button key={id} className={view === id ? "on" : ""}
-              onClick={() => { setSession(null); setBlitz(false); setView(id); }}>
+              onClick={() => { setSession(null); setBlitz(false); setExam(false); if (id !== "training") setTrainPreset(null); setView(id); }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
                 strokeLinecap="round" strokeLinejoin="round"><path d={path} /></svg>
               {label}

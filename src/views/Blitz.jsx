@@ -4,6 +4,7 @@ import { Confetti } from "../lib/ui.jsx";
 import { QUESTIONS } from "../data/questions.js";
 import { WORLDS } from "../data/content.js";
 import { PHILS } from "../data/ref.js";
+import { fxCorrect, fxWrong } from "../lib/fx.js";
 
 const shuffle = a => [...a].sort(() => Math.random() - 0.5);
 const DURATION = 90; // Sekunden
@@ -68,6 +69,7 @@ export default function Blitz({ onClose }) {
   function answer(idx, ok) {
     if (picked !== null) return;
     setPicked({ idx, ok });
+    (ok ? fxCorrect : fxWrong)();
     const nHits = ok ? hits + 1 : hits;
     const nCombo = ok ? combo + 1 : 0;
     setHits(nHits); setCombo(nCombo); setBest(b => Math.max(b, nCombo));

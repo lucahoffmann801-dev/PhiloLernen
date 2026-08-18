@@ -3,6 +3,7 @@ import { useStore } from "../lib/store.jsx";
 import { Confetti } from "../lib/ui.jsx";
 import Question from "../lib/Question.jsx";
 import { QUESTIONS } from "../data/questions.js";
+import { fxCorrect, fxWrong } from "../lib/fx.js";
 
 const shuffle = a => [...a].sort(() => Math.random() - 0.5);
 const firstSentence = t => {
@@ -38,9 +39,16 @@ export default function Player({ session, onClose }) {
     }
     const cards = lesson.cards.map(c => ({ kind: "card", c }));
     const mcs = makeMc(world, lesson);
-    const qs = lesson.checks.map(id => QUESTIONS.find(q => q.id === id)).filter(Boolean)
-      .map(q => ({ kind: "q", q }));
-    return [...cards, ...mcs, ...qs];
+    const checkQs = lesson.checks.map(id => QUESTIONS.find(q => q.id === id)).filter(Boolean);
+    const qs = checkQs.map(q => ({ kind: "q", q }));
+    // Kaltstart (Pretesting): Lektion noch nie gemacht -> erst 2 Thesen blind raten,
+    // dann lernen, dann dieselben Thesen als echter Check. Falsch raten ist erwünscht.
+    const fresh = !store.s.lessonsDone[lesson.id] &&
+      checkQs.every(q => (store.s.cards[q.id]?.seen ?? 0) === 0);
+    const pre = fresh ? checkQs.filter(q => q.typ === "tf").slice(0, 2)
+      .map(q => ({ kind: "q", q, pretest: true })) : [];
+    return [...pre, ...cards, ...mcs, ...qs];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [world, lesson, boss]);
 
   const [i, setI] = useState(0);
@@ -51,12 +59,13 @@ export default function Player({ session, onClose }) {
 
   const total = steps.length;
   const step = steps[i];
-  const nQ = steps.filter(s => s.kind !== "card").length;
+  const nQ = steps.filter(s => s.kind !== "card" && !s.pretest).length;
 
-  function advance(grade) {
+  function advance(grade, conf) {
     let nHits = hits, nCombo = combo;
+    if (step.pretest) { setI(i + 1); return; }
     if (grade !== undefined) {
-      if (step.kind === "q" && !boss) store.grade(step.q.id, grade);
+      if (step.kind === "q" && !boss) store.grade(step.q.id, grade, conf);
       if (step.kind === "mc") store.quickXp(grade === 2 ? 2 : 0);
       if (grade === 2) { nHits = hits + 1; nCombo = combo + 1; }
       else nCombo = 0;
@@ -104,8 +113,8 @@ export default function Player({ session, onClose }) {
         ) : step.kind === "mc" ? (
           <McCard key={i} step={step} world={world} wname={wname} onDone={advance} />
         ) : (
-          <Question key={step.q.id} q={step.q} worldName={wname} color={world.color}
-            onDone={advance} simple={boss} />
+          <Question key={step.q.id + (step.pretest ? "-pre" : "")} q={step.q} worldName={wname}
+            color={world.color} onDone={advance} simple={boss} pretest={step.pretest} />
         )}
       </div>
 
@@ -140,6 +149,7 @@ function ConceptCard({ c, world, wname }) {
 function McCard({ step, world, wname, onDone }) {
   const [picked, setPicked] = useState(null);
   const ok = picked !== null && step.opts[picked].ok;
+  function pick(j) { setPicked(j); (step.opts[j].ok ? fxCorrect : fxWrong)(); }
   return (
     <div className="qcard">
       <div className="qmeta">
@@ -151,7 +161,7 @@ function McCard({ step, world, wname, onDone }) {
         {step.opts.map((o, j) => (
           <button key={j} disabled={picked !== null}
             className={picked !== null ? (o.ok ? "hit" : j === picked ? "missed" : "") : ""}
-            onClick={() => setPicked(j)}>{o.t}</button>
+            onClick={() => pick(j)}>{o.t}</button>
         ))}
       </div>
       {picked !== null && (

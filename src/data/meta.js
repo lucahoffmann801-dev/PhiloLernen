@@ -105,7 +105,7 @@ export const PLAN = [
  {d:"27.08.",w:"Do",h:"Gastvortrag KI-Ethik + Roter Faden",m:"",
   t:["Lernpfad: Gastvortrag komplett","Boss-Check Gastvortrag","Roter Faden: alle Verbindungen einmal durchgehen","Training: Verbindungsfragen"]},
  {d:"28.08.",w:"Fr",h:"Probeklausur",m:"Probeklausur unter Zeit",
-  t:["Training: 30 Fragen gemischt, Begründung jedes Mal SCHRIFTLICH","Ehrlich selbst bewerten","Die drei schwächsten Kapitel notieren"]},
+  t:["Generalprobe-Modus: 20 Fragen in 25 Minuten, Begründungen SCHRIFTLICH","Auswertung anschauen: die schwächsten Kapitel stehen oben","Fehler-Postfach danach leeren"]},
  {d:"29.08.",w:"Sa",h:"Gezielte Fehlerarbeit",m:"",
   t:["Training: Modus „Nur Fehler“ leeren","Schwächste zwei Kapitel im Nachschlagewerk lesen","Alle Merksätze durchgehen"]},
  {d:"30.08.",w:"So",h:"Lockerer Durchgang, früh Schluss",m:"Morgen ist es so weit",

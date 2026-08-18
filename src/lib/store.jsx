@@ -3,17 +3,19 @@ import { QUESTIONS } from "../data/questions.js";
 import { WORLDS } from "../data/content.js";
 import { LEVELS, DAILY_GOAL } from "../data/meta.js";
 import { pullProgress, pushProgress } from "./supabase.js";
+import { setFx } from "./fx.js";
 
 const KEY = "philo-lernen-v2";
 const DAY = 864e5;
 export const todayKey = () => new Date().toISOString().slice(0, 10);
+const dayKeyOf = ts => new Date(ts).toISOString().slice(0, 10);
 const todayTs = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); };
 
-// Auf die kurze Zeit bis zur Klausur gestauchte Wiederholungsintervalle (Tage je Box).
+// Gestauchte Wiederholungsintervalle (Tage je Box).
 const BOX = [0, 1, 1, 2, 3];
 const QMAP = Object.fromEntries(QUESTIONS.map(q => [q.id, q]));
+export const FREEZE_MAX = 2;
 
-// Tagesquests: kleine, sicher erreichbare Ziele mit Bonus-XP.
 export const QUESTS = [
   { id: "l", emoji: "📖", label: "1 Lektion abschließen", target: 1, xp: 10 },
   { id: "t", emoji: "🃏", label: "10 Karten im Training", target: 10, xp: 10 },
@@ -24,16 +26,18 @@ function freshState() {
   return {
     xp: 0,
     lessonsDone: {}, bossDone: {}, cards: {}, checks: {},
-    dayXp: {},                // yyyy-mm-dd -> xp
-    dayStats: {},             // yyyy-mm-dd -> {l,t,b}
-    questsAwarded: {},        // yyyy-mm-dd -> {l:true,...}
+    dayXp: {}, dayStats: {}, questsAwarded: {},
     streak: 0, lastStreakDay: null, bestStreak: 0,
+    freezesUsed: 0,          // sanfte Streak: 2 Schoner für Lücken-Tage
+    probeBest: null,         // bestes Generalproben-Ergebnis {pct, pts, max, date}
+    settings: { sound: true, haptics: true },
     syncCode: null, stamp: 0,
   };
 }
 
 function loadLocal() {
-  try { const r = localStorage.getItem(KEY); if (r) return { ...freshState(), ...JSON.parse(r) }; } catch {}
+  try { const r = localStorage.getItem(KEY); if (r) { const p = JSON.parse(r);
+    return { ...freshState(), ...p, settings: { ...freshState().settings, ...(p.settings || {}) } }; } } catch {}
   return freshState();
 }
 
@@ -43,6 +47,15 @@ function genCode() {
   const a = new Uint32Array(10); crypto.getRandomValues(a);
   for (let i = 0; i < 10; i++) s += abc[a[i] % abc.length];
   return "luca-" + s;
+}
+
+function mergeCard(o, c) {
+  return {
+    box: Math.max(o.box ?? 0, c.box ?? 0), due: Math.max(o.due ?? 0, c.due ?? 0),
+    seen: Math.max(o.seen ?? 0, c.seen ?? 0), miss: Math.max(o.miss ?? 0, c.miss ?? 0),
+    heal: Math.max(o.heal ?? 0, c.heal ?? 0), cw: Math.max(o.cw ?? 0, c.cw ?? 0),
+    winDays: [...new Set([...(o.winDays || []), ...(c.winDays || [])])].sort(),
+  };
 }
 
 function merge(a, b) {
@@ -55,11 +68,7 @@ function merge(a, b) {
     .forEach(k => out.bossDone[k] = Math.max(a.bossDone?.[k] ?? 0, b.bossDone?.[k] ?? 0));
   out.cards = { ...(b.cards || {}) };
   Object.entries(a.cards || {}).forEach(([id, c]) => {
-    const o = out.cards[id];
-    out.cards[id] = !o ? c : {
-      box: Math.max(o.box, c.box), due: Math.max(o.due, c.due),
-      seen: Math.max(o.seen, c.seen), miss: Math.max(o.miss, c.miss),
-    };
+    out.cards[id] = out.cards[id] ? mergeCard(out.cards[id], c) : c;
   });
   out.checks = { ...(b.checks || {}), ...(a.checks || {}) };
   out.dayXp = { ...(b.dayXp || {}) };
@@ -73,20 +82,39 @@ function merge(a, b) {
   Object.entries(a.questsAwarded || {}).forEach(([d, qa]) =>
     out.questsAwarded[d] = { ...(out.questsAwarded[d] || {}), ...qa });
   out.bestStreak = Math.max(a.bestStreak || 0, b.bestStreak || 0);
+  out.freezesUsed = Math.max(a.freezesUsed || 0, b.freezesUsed || 0);
+  out.probeBest = (a.probeBest?.pct ?? -1) >= (b.probeBest?.pct ?? -1) ? a.probeBest : b.probeBest;
+  out.settings = a.settings || b.settings;
   if ((b.stamp || 0) > (a.stamp || 0)) { out.streak = b.streak; out.lastStreakDay = b.lastStreakDay; }
   out.stamp = Math.max(a.stamp || 0, b.stamp || 0);
   out.syncCode = a.syncCode || b.syncCode;
   return out;
 }
 
+// Sanfte Streak: Lücken-Tage werden mit Schonern überbrückt statt hart zu resetten.
+function reconcileStreak(st) {
+  if (!st.lastStreakDay || !st.streak) return { st, frozen: 0 };
+  const last = new Date(st.lastStreakDay + "T12:00:00").getTime();
+  const gap = Math.round((todayTs() + 12 * 36e5 - last) / DAY) - 1; // volle Tage ohne Aktivität
+  if (gap <= 0) return { st, frozen: 0 };
+  const avail = FREEZE_MAX - (st.freezesUsed || 0);
+  if (gap <= avail) {
+    return { st: { ...st, freezesUsed: (st.freezesUsed || 0) + gap }, frozen: gap };
+  }
+  return { st: { ...st, streak: 0 }, frozen: -1 }; // -1 = Streak sanft beendet
+}
+
 const Ctx = createContext(null);
 export const useStore = () => useContext(Ctx);
 
 export function StoreProvider({ children }) {
-  const [s, setS] = useState(loadLocal);
+  const [init] = useState(() => reconcileStreak(loadLocal()));
+  const [s, setS] = useState(init.st);
   const [syncState, setSyncState] = useState("aus");
   const pushTimer = useRef(null);
   const sRef = useRef(s); sRef.current = s;
+
+  useEffect(() => { setFx(s.settings); }, [s.settings]);
 
   useEffect(() => {
     const code = s.syncCode;
@@ -118,15 +146,15 @@ export function StoreProvider({ children }) {
       const tk = todayKey();
       st.dayXp = { ...st.dayXp, [tk]: (st.dayXp[tk] ?? 0) + n };
       if (st.lastStreakDay !== tk) {
-        const y = new Date(Date.now() - DAY).toISOString().slice(0, 10);
-        st.streak = st.lastStreakDay === y ? st.streak + 1 : 1;
+        const y = dayKeyOf(Date.now() - DAY);
+        st.streak = (st.lastStreakDay === y || st.streak > 0) ? st.streak + 1 : 1;
+        if (st.streak === 0) st.streak = 1;
         st.lastStreakDay = tk;
         st.bestStreak = Math.max(st.bestStreak, st.streak);
       }
       return st;
     };
 
-    // Quest-Zähler erhöhen; erreichtes Ziel schüttet einmalig Bonus-XP aus.
     const bump = (st, key, n = 1) => {
       const tk = todayKey();
       const cur = { l: 0, t: 0, b: 0, ...(st.dayStats[tk] || {}) };
@@ -142,14 +170,23 @@ export function StoreProvider({ children }) {
     };
 
     return {
-      grade(qid, g) {
+      // g: 0 daneben / 1 halb / 2 sass · conf: 0 geraten / 1 unsicher / 2 sicher
+      grade(qid, g, conf = 1) {
         up(st => {
-          const c = st.cards[qid] ?? { box: 0, due: 0, seen: 0, miss: 0 };
-          const n = { ...c, seen: c.seen + 1 };
-          if (g === 0) { n.box = 0; n.miss = c.miss + 1; }
-          else if (g === 1) { n.box = Math.max(0, c.box - 1); n.miss = c.miss + 1; }
-          else n.box = Math.min(4, c.box + 1);
-          n.due = todayTs() + BOX[n.box] * DAY;
+          const c = { box: 0, due: 0, seen: 0, miss: 0, heal: 0, cw: 0, winDays: [], ...(st.cards[qid] || {}) };
+          const n = { ...c, seen: c.seen + 1, winDays: [...c.winDays] };
+          if (g === 2) {
+            n.box = Math.min(4, c.box + 1);
+            n.heal = (c.heal ?? 0) + 1;
+            const tk = todayKey();
+            if (!n.winDays.includes(tk)) n.winDays.push(tk); // Sitzt-Zähler: verschiedene Tage
+          } else {
+            n.box = g === 1 ? Math.max(0, c.box - 1) : 0;
+            n.miss = c.miss + 1; n.heal = 0;
+            if (g === 0 && conf === 2) n.cw = (c.cw ?? 0) + 1; // sicher-aber-falsch: Hypercorrection-Kandidat
+          }
+          // Sicher-falsch kommt sofort wieder, sonst normales Intervall
+          n.due = (g === 0 && conf === 2) ? todayTs() : todayTs() + BOX[n.box] * DAY;
           st.cards = { ...st.cards, [qid]: n };
           addXp(st, g === 2 ? 3 : 1);
           return bump(st, "t");
@@ -165,10 +202,17 @@ export function StoreProvider({ children }) {
           return addXp(st, score >= 0.7 ? 25 : 8);
         });
       },
-      finishBlitz(correct) {
-        up(st => { addXp(st, correct * 2); return bump(st, "b"); });
+      finishBlitz(correct) { up(st => { addXp(st, correct * 2); return bump(st, "b"); }); },
+      finishProbe(pts, max) {
+        up(st => {
+          const pct = max ? pts / max : 0;
+          if (!st.probeBest || pct > st.probeBest.pct)
+            st.probeBest = { pct, pts, max, date: todayKey() };
+          return addXp(st, 20);
+        });
       },
       toggleCheck(k) { up(st => { st.checks = { ...st.checks, [k]: !st.checks[k] }; return st; }); },
+      setSetting(k, v) { up(st => { st.settings = { ...st.settings, [k]: v }; return st; }); },
       setSyncCode(code) {
         const c = (code ?? "").trim() || null;
         setS(cur => ({ ...cur, syncCode: c, stamp: (cur.stamp || 0) + 1 }));
@@ -182,7 +226,12 @@ export function StoreProvider({ children }) {
 
   const derived = useMemo(() => {
     const isDue = id => { const c = s.cards[id]; return !c || c.due <= todayTs(); };
-    const mastery = id => { const c = s.cards[id]; return c ? c.box / 4 : 0; };
+    // Sitzt-wirklich: 3 korrekte Abrufe an verschiedenen Tagen (Successive Relearning)
+    const sitzt = id => Math.min(3, (s.cards[id]?.winDays?.length ?? 0));
+    const mastery = id => {
+      const c = s.cards[id]; if (!c) return 0;
+      return 0.5 * (c.box / 4) + 0.5 * (sitzt(id) / 3);
+    };
     const worldProgress = w => {
       const total = w.lessons.length + 1;
       const done = w.lessons.filter(l => s.lessonsDone[l.id]).length + ((s.bossDone[w.id] ?? 0) >= 0.7 ? 1 : 0);
@@ -194,15 +243,23 @@ export function StoreProvider({ children }) {
       if ((s.bossDone[w.id] ?? 0) < 0.7) { next = { type: "boss", world: w }; break outer; }
     }
     const dueCount = QUESTIONS.filter(q => q.w !== "wx" && isDue(q.id) && (s.cards[q.id]?.seen ?? 0) > 0).length;
+    // Fehler-Postfach: schon mal falsch, noch nicht 2x in Folge geheilt. Sicher-falsch zuerst.
+    const inbox = QUESTIONS.filter(q => { const c = s.cards[q.id]; return c && c.miss > 0 && (c.heal ?? 0) < 2; })
+      .sort((a, b) => (s.cards[b.id].cw ?? 0) - (s.cards[a.id].cw ?? 0) || s.cards[b.id].miss - s.cards[a.id].miss)
+      .map(q => q.id);
     const level = LEVELS.reduce((acc, l, i) => (s.xp >= l.xp ? i : acc), 0);
     const nextLevel = LEVELS[level + 1] ?? null;
     const tk = todayKey();
     const todayXp = s.dayXp[tk] ?? 0;
     const todayStats = { l: 0, t: 0, b: 0, ...(s.dayStats[tk] || {}) };
     const globalMastery = QUESTIONS.reduce((a, q) => a + mastery(q.id), 0) / QUESTIONS.length;
-    return { isDue, mastery, worldProgress, next, dueCount, level, nextLevel, todayXp, todayStats,
-      dailyGoal: DAILY_GOAL, globalMastery, qmap: QMAP };
+    // Warmstart: die 3 wackligsten bereits gesehenen Karten
+    const warmstart = QUESTIONS.filter(q => q.w !== "wx" && (s.cards[q.id]?.seen ?? 0) > 0)
+      .sort((a, b) => mastery(a.id) - mastery(b.id)).slice(0, 3).map(q => q.id);
+    const freezesLeft = Math.max(0, FREEZE_MAX - (s.freezesUsed || 0));
+    return { isDue, mastery, sitzt, worldProgress, next, dueCount, inbox, level, nextLevel,
+      todayXp, todayStats, dailyGoal: DAILY_GOAL, globalMastery, warmstart, freezesLeft, qmap: QMAP };
   }, [s]);
 
-  return <Ctx.Provider value={{ s, ...api, d: derived, syncState }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ s, ...api, d: derived, syncState, frozenOnLoad: init.frozen }}>{children}</Ctx.Provider>;
 }

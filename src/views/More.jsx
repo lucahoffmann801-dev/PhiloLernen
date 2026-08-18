@@ -8,7 +8,7 @@ export default function More({ toast }) {
   return (
     <div className="view wrap">
       <div className="chips" style={{ marginBottom: 18 }}>
-        {[["ref", "Nachschlagen"], ["plan", "13-Tage-Plan"], ["format", "Klausurformat"], ["sync", "Sync"]].map(([t, l]) => (
+        {[["ref", "Nachschlagen"], ["plan", "13-Tage-Plan"], ["format", "Klausurformat"], ["sync", "Einstellungen"]].map(([t, l]) => (
           <button key={t} className={"chip" + (tab === t ? " on" : "")} onClick={() => setTab(t)}>{l}</button>
         ))}
       </div>
@@ -128,11 +128,22 @@ function Format() {
 }
 
 function Sync({ toast }) {
-  const { s, setSyncCode, genAndSetCode, reset, syncState } = useStore();
+  const { s, setSyncCode, genAndSetCode, reset, syncState, setSetting } = useStore();
   const [val, setVal] = useState(s.syncCode ?? "");
   return (
     <>
-      <h2>Geräte-Sync</h2>
+      <h2>Einstellungen</h2>
+      <div className="card" style={{ marginBottom: 12 }}>
+        <h3 style={{ fontSize: 15, marginBottom: 8 }}>Feedback</h3>
+        {[["sound", "🔊 Sounds bei richtig/falsch"], ["haptics", "📳 Vibration (am Handy)"]].map(([k, label]) => (
+          <label key={k} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", fontSize: 14, cursor: "pointer" }}>
+            <input type="checkbox" checked={!!s.settings?.[k]} onChange={e => setSetting(k, e.target.checked)}
+              style={{ width: 18, height: 18, accentColor: "var(--mint)" }} />
+            <span>{label}</span>
+          </label>
+        ))}
+      </div>
+      <h3 style={{ fontSize: 17, margin: "6px 0 2px" }}>Geräte-Sync</h3>
       <p className="sub">Ein Sync-Code verbindet Laptop und Handy: gleicher Code, gleicher Fortschritt. Ohne Code bleibt alles nur auf diesem Gerät gespeichert.</p>
       <div className="card" style={{ marginBottom: 12 }}>
         <h3 style={{ fontSize: 15 }}>Dein Sync-Code</h3>
