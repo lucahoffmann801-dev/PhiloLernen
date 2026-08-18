@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "./lib/store.jsx";
-import { useToast } from "./lib/ui.jsx";
-import { EXAM_TS } from "./data/meta.js";
+import { useToast, Ring } from "./lib/ui.jsx";
+import { EXAM_TS, LEVELS } from "./data/meta.js";
 import Home from "./views/Home.jsx";
 import Path from "./views/Path.jsx";
 import Training from "./views/Training.jsx";
 import Threads from "./views/Threads.jsx";
 import More from "./views/More.jsx";
 import Player from "./views/Player.jsx";
+import Blitz from "./views/Blitz.jsx";
 
 const NAV = [
   ["home", "Heute", "M12 3l9 8h-3v9h-5v-6h-2v6H6v-9H3z"],
@@ -20,23 +21,55 @@ const NAV = [
 export default function App() {
   const { s, d } = useStore();
   const [view, setView] = useState("home");
-  const [session, setSession] = useState(null); // {world, lesson} | {world, boss:true}
+  const [session, setSession] = useState(null);
+  const [blitz, setBlitz] = useState(false);
   const [toastNode, toast] = useToast();
   const [, tick] = useState(0);
   useEffect(() => { const t = setInterval(() => tick(x => x + 1), 30000); return () => clearInterval(t); }, []);
 
+  // Level-Up-Overlay
+  const [levelUp, setLevelUp] = useState(null);
+  const prevLevel = useRef(d.level);
+  useEffect(() => {
+    if (d.level > prevLevel.current) setLevelUp(LEVELS[d.level].title);
+    prevLevel.current = d.level;
+  }, [d.level]);
+
+  // Fokus-Timer (app-weit, oben immer sichtbar wenn er läuft)
+  const [timerOpen, setTimerOpen] = useState(false);
+  const [tMin, setTMin] = useState(15);
+  const [tLeft, setTLeft] = useState(null); // Sekunden oder null
+  const [tPause, setTPause] = useState(false);
+  useEffect(() => {
+    if (tLeft === null) return;
+    if (tLeft <= 0) {
+      if (!tPause) { setTPause(true); setTLeft(5 * 60); toast("Block geschafft! 5 Minuten Pause, weg vom Bildschirm. 🌿"); }
+      else { setTPause(false); setTLeft(null); toast("Pause vorbei. Bereit für den nächsten Block?"); setTimerOpen(true); }
+      return;
+    }
+    const t = setTimeout(() => setTLeft(l => l - 1), 1000);
+    return () => clearTimeout(t);
+  }, [tLeft, tPause]);
+
   const ms = EXAM_TS - Date.now();
   const days = Math.max(0, Math.floor(ms / 864e5));
   const hours = Math.max(0, Math.floor(ms / 36e5) % 24);
+  const fmt = sec => String(Math.floor(sec / 60)).padStart(2, "0") + ":" + String(sec % 60).padStart(2, "0");
 
   return (
     <div className="shell">
       <header className="topbar">
         <div className="wrap">
-          <div className="brand">PhiloLernen<small>Angewandte Ethik · Gesang</small></div>
+          <div className="brand">PhiloLernen<small>Angewandte Ethik</small></div>
           <div className="statbar">
-            <span className="stat" title="Tages-Serie">🔥<span className="mono">{s.streak}</span></span>
-            <span className="stat" title="XP">⚡<span className="mono">{s.xp}</span></span>
+            {tLeft !== null && (
+              <button className="timerchip" style={tPause ? { background: "var(--ok)" } : {}}
+                onClick={() => setTimerOpen(true)}>
+                {tPause ? "☕" : "🎯"} <span className="mono">{fmt(tLeft)}</span>
+              </button>
+            )}
+            <span className="stat" title="Serie & XP">🔥<span className="mono">{s.streak}</span>
+              <span style={{ color: "var(--line)" }}>·</span>⚡<span className="mono">{s.xp}</span></span>
             <div className={"daysleft" + (days < 4 ? " urg" : "")}>
               <b className="mono">{days}T {hours}h</b><span>bis Klausur</span>
             </div>
@@ -44,18 +77,76 @@ export default function App() {
         </div>
       </header>
 
-      {view === "home" && <Home openPlayer={setSession} goto={setView} />}
+      {view === "home" && <Home openPlayer={setSession} openBlitz={() => setBlitz(true)}
+        goto={setView} openTimer={() => setTimerOpen(true)} />}
       {view === "path" && <Path openPlayer={setSession} />}
-      {view === "training" && <Training />}
+      {view === "training" && <Training openBlitz={() => setBlitz(true)} />}
       {view === "threads" && <Threads />}
       {view === "more" && <More toast={toast} />}
 
       {session && <Player session={session} onClose={() => setSession(null)} />}
+      {blitz && <Blitz onClose={() => setBlitz(false)} />}
+
+      {timerOpen && (
+        <>
+          <div className="sheetbg" onClick={() => setTimerOpen(false)} />
+          <div className="sheet">
+            <div className="grab" />
+            <h3 style={{ textAlign: "center", fontSize: 17 }}>Fokus-Timer</h3>
+            <p className="small muted" style={{ textAlign: "center", marginTop: 4 }}>
+              Kurze Blöcke schlagen lange Sessions. Die Zeit läuft oben sichtbar mit, egal wo du in der App bist.
+            </p>
+            {tLeft === null ? (
+              <>
+                <div className="presets">
+                  {[10, 15, 20, 25].map(m => (
+                    <button key={m} className={tMin === m ? "on" : ""} onClick={() => setTMin(m)}>{m}′</button>
+                  ))}
+                </div>
+                <div className="tctl">
+                  <button className="btn" style={{ background: "var(--mint)" }}
+                    onClick={() => { setTPause(false); setTLeft(tMin * 60); setTimerOpen(false); }}>
+                    Block starten
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div style={{ display: "grid", placeItems: "center", margin: "16px 0" }}>
+                  <Ring size={110} stroke={10} pct={tLeft / ((tPause ? 5 : tMin) * 60)}
+                    color={tPause ? "var(--ok)" : "var(--mint)"}>
+                    <b className="mono" style={{ fontSize: 22 }}>{fmt(tLeft)}</b>
+                  </Ring>
+                </div>
+                <div className="tctl">
+                  <button className="btn sec" onClick={() => { setTLeft(null); setTPause(false); setTimerOpen(false); }}>
+                    Beenden
+                  </button>
+                  <button className="btn" onClick={() => setTimerOpen(false)}>Weiter lernen</button>
+                </div>
+              </>
+            )}
+          </div>
+        </>
+      )}
+
+      {levelUp && (
+        <div className="levelup" onClick={() => setLevelUp(null)}>
+          <div className="box">
+            <div className="big">🎓</div>
+            <h1>Level-Up!</h1>
+            <p>Du bist jetzt <b>{levelUp}</b>. Weiter so.</p>
+            <button className="btn" style={{ marginTop: 18, width: "auto", padding: "12px 30px" }}
+              onClick={() => setLevelUp(null)}>Nice!</button>
+          </div>
+        </div>
+      )}
 
       <nav className="bnav">
         <div className="row">
           {NAV.map(([id, label, path]) => (
-            <button key={id} className={view === id ? "on" : ""} onClick={() => { setSession(null); setView(id); }}>
+            <button key={id} className={view === id ? "on" : ""}
+              onClick={() => { setSession(null); setBlitz(false); setView(id); }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
                 strokeLinecap="round" strokeLinejoin="round"><path d={path} /></svg>
               {label}

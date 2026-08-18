@@ -3,7 +3,7 @@
 // pruef (Prüfungsformulierung, optional). checks = Fragen-IDs aus questions.js.
 
 export const WORLDS = [
-{id:"w1", nr:"01", title:"Grundtypen normativer Ethik", color:"#7aa2ff", emoji:"🧭",
+{id:"w1", nr:"01", title:"Grundtypen normativer Ethik", color:"#5b7cfa", emoji:"🧭",
  intro:"Das Fundament: fünf Denkschulen, ein Gedankenexperiment, zwei Methoden.",
  lessons:[
  {id:"w1l1", title:"Ethik, Moral, Ethos", mins:4, cards:[
@@ -77,7 +77,7 @@ export const WORLDS = [
  ], checks:["q9","q12","q13"]},
  ]},
 
-{id:"w2", nr:"02", title:"Rationierung im Gesundheitswesen", color:"#4ecdc4", emoji:"🏥",
+{id:"w2", nr:"02", title:"Rationierung im Gesundheitswesen", color:"#0fa396", emoji:"🏥",
  intro:"Wenn nicht alles für alle reicht: Wer bekommt die knappe Behandlung, und warum?",
  lessons:[
  {id:"w2l1", title:"Knappheit und ihre Formen", mins:5, cards:[
@@ -134,7 +134,7 @@ export const WORLDS = [
  ], checks:["q34","q36"]},
  ]},
 
-{id:"w3", nr:"03", title:"Leben, Töten und Embryonen", color:"#ff8fa3", emoji:"🧬",
+{id:"w3", nr:"03", title:"Leben, Töten und Embryonen", color:"#e0566e", emoji:"🧬",
  intro:"Ab wann zählt ein Mensch moralisch? Drei Theorien, ein brennendes Labor.",
  lessons:[
  {id:"w3l1", title:"Was das Gesetz sagt", mins:4, cards:[
@@ -198,7 +198,7 @@ export const WORLDS = [
  ], checks:["q51","q52","q53"]},
  ]},
 
-{id:"w4", nr:"04", title:"Autonomie und Patientenwille", color:"#ffd166", emoji:"🖊️",
+{id:"w4", nr:"04", title:"Autonomie und Patientenwille", color:"#d98f0e", emoji:"🖊️",
  intro:"Wer entscheidet über meinen Körper? Und was gilt, wenn ich es nicht mehr sagen kann?",
  lessons:[
  {id:"w4l1", title:"Vom Paternalismus zum informed consent", mins:4, cards:[
@@ -251,7 +251,7 @@ export const WORLDS = [
    pruef:"Fall c: andere Kriterien als Autonomie nötig (Wohlergehen, Würde)."},
  ], checks:["q66","q67"]},
  ]},
-{id:"w5", nr:"05", title:"Sterbehilfe", color:"#c792ea", emoji:"🕊️",
+{id:"w5", nr:"05", title:"Sterbehilfe", color:"#8f5cc9", emoji:"🕊️",
  intro:"Sieben Begriffe, vier Argumente, ein Dammbruch: die schärfste Debatte der Medizinethik.",
  lessons:[
  {id:"w5l1", title:"Die Landkarte der Sterbehilfe", mins:5, cards:[
@@ -305,7 +305,7 @@ export const WORLDS = [
  ], checks:["q72","q83","q86"]},
  ]},
 
-{id:"w6", nr:"06", title:"Absolute Armut und Spendepflicht", color:"#ff9f68", emoji:"🌍",
+{id:"w6", nr:"06", title:"Absolute Armut und Spendepflicht", color:"#e06d2e", emoji:"🌍",
  intro:"Singers ertrinkendes Kind, sechs Einwände und drei Gegenentwürfe.",
  lessons:[
  {id:"w6l1", title:"Singer und das ertrinkende Kind", mins:5, cards:[
@@ -353,7 +353,7 @@ export const WORLDS = [
  ], checks:["q94","q95","q96"]},
  ]},
 
-{id:"w7", nr:"07", title:"Umweltethik und Biodiversität", color:"#8ce99a", emoji:"🌿",
+{id:"w7", nr:"07", title:"Umweltethik und Biodiversität", color:"#2f9e44", emoji:"🌿",
  intro:"Was ist wertvoll: der Mensch, das Tier, die Pflanze oder das ganze Ökosystem?",
  lessons:[
  {id:"w7l1", title:"Warum Biodiversität zählt", mins:4, cards:[
@@ -389,7 +389,7 @@ export const WORLDS = [
  ], checks:["q104","q105","q110"]},
  ]},
 
-{id:"w8", nr:"08", title:"Klimaethik und Klimagerechtigkeit", color:"#66d9ff", emoji:"🌡️",
+{id:"w8", nr:"08", title:"Klimaethik und Klimagerechtigkeit", color:"#0b93c9", emoji:"🌡️",
  intro:"Wem gehört die Atmosphäre, wer zahlt für die Vergangenheit, und darf man am Klima schrauben?",
  lessons:[
  {id:"w8l1", title:"Physik und Werkzeugkasten", mins:5, cards:[
@@ -432,7 +432,7 @@ export const WORLDS = [
  ], checks:["q127","q129","q130"]},
  ]},
 
-{id:"w9", nr:"GV", title:"Gastvortrag: KI-Ethik", color:"#e8edf7", emoji:"🤖",
+{id:"w9", nr:"GV", title:"KI-Ethik", color:"#5b6472", emoji:"🤖",
  intro:"Zezulka über Algorithmen, die soziale Güter verteilen. Laut Klausurhinweis: Kernpositionen sind Prüfungsstoff.",
  lessons:[
  {id:"w9l1", title:"Wenn Algorithmen verteilen", mins:5, cards:[
@@ -496,10 +496,94 @@ export const WORLDS = [
    pruef:"Faire Scores → größere Geschlechterlücken; keine Effizienzgewinne durch Vernachlässigung der Hochrisikogruppe; Dove Supremacy."},
  ], checks:["g12","g13","g14"]},
  ]},
+{id:"w10", nr:"10", title:"Individuelle Klimapflichten", color:"#c0392b", emoji:"🚴",
+ intro:"Spenden statt Fahrrad fahren? Was der Einzelne fürs Klima wirklich tun sollte. (Teil 1)",
+ lessons:[
+ {id:"w10l1", title:"Die Standardstrategie", mins:4, cards:[
+  {term:"Wer ist eigentlich „wir“?", klar:"„Wir müssen sofort energisch handeln!“ Aber wer? Eigentlich sollte der STAAT koordinieren und sicherstellen, dass genügend Leute am selben Strang ziehen. Er versagt aber dabei. Und wenn Staaten versagen, müssen Individuen aushelfen.",
+   bsp:"Dasselbe Argument kennst du von Singer aus Kapitel 06: Solange Staaten bei der Armut versagen, sind Individuen gefragt. Hier kehrt es beim Klima wieder.",
+   pruef:"Staat sollte koordinieren, versagt aber; wenn Staaten versagen, müssen Individuen aushelfen."},
+  {term:"Die Standardstrategie", klar:"Der Einzelne wird aufgefordert, sein PRIVATES Emissionsverhalten umzustellen: auf Fleisch, Flüge und Autos verzichten. Belohnung: soziale und eigene Anerkennung. Die Vorlesung nennt das einen „Ausdruck der Hilflosigkeit“.",
+   bsp:"Der klassische Klima-Ratgeber: kürzer duschen, Zug statt Flieger, Hafermilch. Gut gemeint, aber ist es auch die wirksamste Form zu helfen?",
+   pruef:"Standardstrategie: privates Emissionsverhalten umstellen (Fleisch, Fliegen, Auto) gegen Anerkennung; Ausdruck der Hilflosigkeit."},
+  {term:"Zwei Hindernisse der Standardstrategie", klar:"Erstens MOTIVATION: Wer macht da noch mit, gewinnt man so überhaupt neue Mitstreiter? Zweitens EFFEKTIVITÄT: Führt mein schmerzhafter persönlicher Beitrag tatsächlich zu einer Verbesserung?",
+   bsp:"Ein einzelner Flugverzicht spart real ein paar Tonnen CO2 unter Milliarden. Der Verzicht tut weh, die Weltwirkung ist winzig. Genau diese Lücke macht die Strategie angreifbar.",
+   merk:"Zwei Hindernisse: Motivation und Effektivität.",
+   pruef:"Hindernisse: a) Motivation (Mitstreiter?), b) Effektivität (bewirkt mein Beitrag eine Verbesserung?)."},
+ ], checks:["k0","k1"]},
+ {id:"w10l2", title:"Die Doktrin vom großen Unterschied", mins:4, cards:[
+  {term:"Die Doktrin vom großen Unterschied", klar:"Die Überlegung: Einzelne private Emissionsentscheidungen machen für das Klima keinen relevanten Unterschied. Wirklich zählen würde nur, was einen GROSSEN Unterschied macht. Gegen diese Doktrin stehen zwei Einwände: Sie legitimiert Trittbrettfahren, und die realen Wirkungen des Konsumentenverhaltens werden verschenkt.",
+   bsp:"„Auf mein Schnitzel kommt es nicht an“ stimmt kausal fast, aber wenn alle so denken, fährt jeder Trittbrett, und die Summe der verschenkten Konsumwirkungen ist riesig.",
+   pruef:"Einwände gegen die Doktrin: a) Trittbrettfahren wird legitimiert, b) Wirkungen des Konsumentenverhaltens werden verschenkt."},
+  {term:"Das Fazit: Spenden statt Fahrrad fahren?", klar:"Schau dir genau an, ob es bei deinem Beitrag nur um vergleichsweise KLEINE Verbesserungen der Welt geht, während du GRÖSSERE bewirken könntest. Daher der provokante Titel: Eine wirksame Klimaspende kann mehr bewirken als privater Konsumverzicht.",
+   bsp:"Statt 100 Euro Mehrkosten für das ökologisch perfekte Leben: 100 Euro an eine hochwirksame Klimaorganisation. Gesangs Punkt ist nicht „tu nichts“, sondern „tu das Wirksamste“.",
+   merk:"Vergleiche immer: kleine sichere Eigenwirkung gegen große mögliche Hebelwirkung.",
+   pruef:"Prüfe, ob dein Beitrag kleine Verbesserungen bringt, während du größere bewirken könntest."},
+  {term:"Was wir wissen können", klar:"Bei GROSSEN Schäden und großen Gewinnen sind die Schätzungen gut und die Unterschiede zwischen den Handlungsalternativen groß. Bei kleinen Unterschieden zwischen Alternativen wird die Schätzung dagegen fehleranfällig.",
+   bsp:"Ob eine Großspende mehr bringt als ein Alltagsverzicht, lässt sich ordentlich abschätzen. Ob Zugfahrt A oder Busfahrt B um 3 kg CO2 besser ist, verschwindet im Schätzfehler.",
+   pruef:"Sehr nützliche/schädliche Handlungen: gute Schätzung, große Unterschiede; kleine Unterschiede: größere Fehleranfälligkeit."},
+ ], checks:["k2","k3"]},
+ ]},
+
+{id:"w11", nr:"11", title:"Demokratie in der Krise", color:"#1d6fb8", emoji:"🏛️",
+ intro:"Kann Demokratie Zukunft? Vier Probleme, zwei Reparaturvorschläge und die Ökodiktatur-Frage.",
+ lessons:[
+ {id:"w11l1", title:"Vier Probleme der Demokratie", mins:5, cards:[
+  {term:"Qualifikationsprobleme", klar:"Politiker UND Wähler sind von der Komplexität der Nachhaltigkeitsfragen oft überfordert.",
+   bsp:"Das Folienbeispiel: die Energiewende. Woran liegt eigentlich die Strompreissteigerung? Wer das nicht sicher beantworten kann, soll trotzdem darüber abstimmen.",
+   pruef:"Politiker und Wähler von Komplexität überfordert (Beispiel Energiewende/Strompreis)."},
+  {term:"Falsche Anreize", klar:"Politiker optimieren auf WIEDERWAHL, nicht auf die ferne Zukunft. Bürger wollen Steuern runter, Arbeitsplatzsicherheit rauf. Langfristige Nachhaltigkeit hat in diesem Anreizsystem keine Stimme.",
+   bsp:"Eine Klimapolitik, deren Nutzen 2060 sichtbar wird, deren Kosten aber vor der nächsten Wahl anfallen, verliert systematisch gegen ein Wahlgeschenk.",
+   merk:"Verbindung: Der Homo Oeconomicus aus der ökonomischen Theorie steckt hinter allen vier Problemen.",
+   pruef:"Politiker: Wiederwahl. Bürger: Steuern runter, Arbeitsplätze rauf."},
+  {term:"Falsches Allgemeinwohlverständnis", klar:"Nur die eigene Wählerschaft zählt. Nach der Moraldefinition der Vorlesung (Interessen ALLER Betroffenen gleichermaßen berücksichtigen) ist Handeln nur zum Wohl der eigenen Klientel schlicht unmoralisch. Den eigenen Staat besonders zu beachten ist aus praktischen Gründen okay, aber es muss Grenzen haben.",
+   bsp:"Klimapolitik betrifft Menschen in Bangladesch und zukünftige Generationen, die bei uns niemand wählen kann. Politik, die nur die eigene Klientel zählt, blendet die meisten Betroffenen aus.",
+   pruef:"Handeln nur zum Wohl der eigenen Wählerklientel ist nach der Moraldefinition unmoralisch; Sonderpflicht für den eigenen Staat nur aus praktischen Gründen, mit Grenzen."},
+  {term:"Lobbyismus", klar:"Es siegt das am besten ORGANISIERTE Interesse, nicht das wichtigste.",
+   bsp:"Folienbeispiele: Energiewende, die gescheiterte Ampel-Produktkennzeichnung, EU-CO2-Grenzwerte, der EU-Emissionshandel. Zukünftige Generationen haben keinen einzigen Lobbyisten in Brüssel.",
+   merk:"Churchill dazu: Demokratie ist die schlechteste Regierungsform, ausgenommen alle anderen. Folgerung der VL: Sie braucht konkrete Reparaturen.",
+   pruef:"Das bestorganisierte, nicht das wichtigste Interesse siegt."},
+ ], checks:["d0","d1","d2"]},
+ {id:"w11l2", title:"Reparatur 1: Volksentscheide", mins:5, cards:[
+  {term:"Die Idee der Basisdemokratie", klar:"Bürger entscheiden direkt über zukunftsrelevante Fragen und orientieren sich dabei, anders als Lobbypolitiker, am Allgemeinwohl. So die Hoffnung. Die These der Vorlesung: Nein! Auch Bürger sind Homo Oeconomicus, die Eigeninteressen überwiegen.",
+   bsp:"Die Hoffnung: Ohne Wiederwahl-Kalkül stimmen Menschen fürs Ganze. Die Befürchtung: Sie stimmen wie beim Einkaufen, für den eigenen Geldbeutel.",
+   pruef:"Idee: direkte Entscheidung am Allgemeinwohl orientiert; These: nein, Homo Oeconomicus."},
+  {term:"Die Schweiz-Befunde (Bonoli & Häusermann 2009)", klar:"In 8 von 10 Renten-Referenden, 7 von 8 Arbeitsmarkt-Referenden und 4 von 4 Versicherungs-Referenden war das ALTER ein sicherer Indikator für das Wahlverhalten, immer im Sinne rationaler Eigennutzmaximierung. Und das, obwohl Schweizer Referenden als sehr informiert gelten.",
+   bsp:"Der Spruch der Folie dazu: Es regiert „ein Homo Oeconomicus mit langem grauem Bart“. Wer von der Rente profitiert, stimmt für die Rente.",
+   merk:"Empirischer Beleg GEGEN die Basisdemokratie-Hoffnung.",
+   pruef:"Bonoli/Häusermann: Alter als sicherer Indikator des Wahlverhaltens, konsistent mit Eigennutzmaximierung; Referenden galten als informiert."},
+  {term:"Geißlers Gegenposition und ihr Problem", klar:"Heiner Geißler: Nach einer umfassenden dialektischen Informationsphase (Argument, Gegenargument, These, Antithese, Synthese) fallen Basisentscheidungen nachhaltig aus, etwa pro Europa. Konter der Vorlesung: Die Schweiz hat auch in einem WOHLINFORMIERTEN Referendum gegen mehr Europa gestimmt.",
+   bsp:"Information allein dreht das Eigeninteresse nicht um. Wissen, was nachhaltig wäre, heißt nicht, dafür zu stimmen.",
+   pruef:"Geißler: informierte Basisentscheidungen fallen nachhaltig aus; Konter: Schweiz stimmte wohlinformiert gegen mehr Europa."},
+  {term:"Die Relativierung: ergänzend, nicht alternativ", klar:"Positiv an Basisdemokratie: Identifikation mit Politik, Aktivierung und bessere Information der Bürger, das „innere Absterben“ wird aufgehalten, Partizipation macht glücklicher. Aber als ERGÄNZUNG, nicht als Ersatz, denn Bürger und Politiker sind sich oft einig, Kosten auf die Zukunft abzuwälzen.",
+   bsp:"Mehr Mitbestimmung tut der Demokratie gut, löst aber das Zukunftsproblem nicht, weil die Zukunft in keiner Abstimmung mitstimmt.",
+   pruef:"Basisdemokratie ergänzend, nicht alternativ; beide Gruppen wälzen Kosten auf die Zukunft ab."},
+ ], checks:["d3","d4","d5"]},
+ {id:"w11l3", title:"Reparatur 2: Zukunftsräte", mins:6, cards:[
+  {term:"Die Idee: Anwälte der Zukunft", klar:"Zukunftsräte oder Ombudspersonen sitzen als Anwälte ZUKÜNFTIGER Generationen in heutigen Entscheidungsgremien: der Zukunft ein Stimmrecht geben. Vorbild: In Ungarn war die Ombudsperson der Arm der Bürgerbewegung im Parlament.",
+   bsp:"Wie ein Vormund vor Gericht für ein Kind spricht, das sich selbst nicht vertreten kann, spricht der Zukunftsrat für Menschen, die noch nicht geboren sind.",
+   pruef:"Anwälte zukünftiger Generationen in heutigen Gremien; der Zukunft ein Stimmrecht geben; Beispiel Ungarn."},
+  {term:"Konzeptfragen: Kompetenzen und Unabhängigkeit", klar:"Welche Kompetenzen: nur Beratergremium, oder echte „vierte Gewalt“ mit Akteneinsicht, Veröffentlichungsrecht, Gesetzesinitiative, Rede-, Ermittlungs- und Klagerecht bis zum (suspensiven oder vollwertigen) Veto? Und wie Unabhängigkeit sichern: Wahl durch Volk oder Parlament, oder Nominierung ohne Parteien durch Journalistenverbände, Wissenschaftsakademien, NGOs?",
+   bsp:"Die Spannbreite reicht vom zahnlosen Beirat bis zu einem Organ mit Vetorecht, das lange Amtszeiten hat, damit es nicht im Wahlzyklus denkt.",
+   pruef:"Kompetenzen: Berater vs. 4. Gewalt (Infos, Initiative, Klage, Veto); Unabhängigkeit: Wahl oder parteifreie Nominierung."},
+  {term:"Der Ökodiktatur-Einwand", klar:"Wird das nicht undemokratisch? Antwort: Die Gewaltenteilung bleibt. Klares, gesetzlich verankertes Mandat, Überstimmung oder Abwahl mit Zweidrittelmehrheit des Parlaments, gerichtliche Kontrolle. Machtmissbrauch ist so wahrscheinlich wie bei jedem anderen Organ. Dazu das Ott-Zitat: Die Gefahr einer Ökodiktatur beschwören vor allem die, die alles tun, um eine solche nötig zu machen.",
+   bsp:"Ein Veto, das das Parlament mit Zweidrittelmehrheit brechen kann, ist keine Diktatur, sondern eine eingebaute Bremse, wie sie Verfassungsgerichte längst haben.",
+   pruef:"Kontrolle: klares Mandat, 2/3-Überstimmung, Gerichte; Ott: Ökodiktatur-Warner machen sie oft erst nötig."},
+  {term:"Einwand: Woher die demokratische Befugnis?", klar:"Wenn nicht direkt gewählt, ist das legitim? Antwort: Bundesrat, EZB und EU-Kommission regieren auch ohne Direktwahl, für Ombudspersonen ist wenigstens die Parlamentswahl vorgesehen. Und Legitimation stammt nicht nur aus dem Demokratieprinzip, sondern auch aus dem Verfassungsstaatsprinzip, das die Menschenwürde wahrt.",
+   bsp:"Niemand hat die EZB-Präsidentin gewählt, trotzdem gilt sie als legitim, weil Verfassung und Auftrag sie binden. Derselbe Maßstab würde für Zukunftsräte gelten.",
+   pruef:"Viele Organe ohne Direktwahl (Bundesrat, EZB, EU-Kommission); Legitimation auch aus dem Verfassungsstaatsprinzip."},
+  {term:"Einwand: Zählt nicht jeder als einer?", klar:"Demokratie heißt: jeder zählt als einer, warum die Zukunft stärker repräsentieren? Antwort: Faktisch funktioniert die Repräsentanz der Zukunft nicht, sie hat kaum Lobby. Eine „umgekehrte Diskriminierung“ zugunsten der Zukunft rechtfertigt sich über MEHR Gleichheit: Wird Nachhaltigkeit verfehlt, ist in einer Welt aus Migration, Kriegen und Katastrophen die Demokratie selbst in Gefahr. Und nein, nicht jede Minderheit kann das fordern: Das Zukunftsargument begründet eine Sonderstellung zukünftiger Generationen.",
+   bsp:"Wie Quoten begründet werden: kurzfristig ungleiche Behandlung für langfristig mehr echte Gleichheit. Nur dass hier die Begünstigten noch gar nicht geboren sind.",
+   pruef:"Zukunft ohne Lobby; umgekehrte Diskriminierung gerechtfertigt über mehr (langfristige) Gleichheit; Sonderstellung zukünftiger Generationen."},
+  {term:"Letzte Einwände und die Bilanz", klar:"Entlastet ein Zukunftsrat die anderen Institutionen von ihrer Zukunftsverantwortung? Ungarn-Erfahrung: nein; zudem kann man Querschnittskompetenz schaffen, etwa den Zukunftsrat mit einem Umweltministerposten mit Finanzminister-Rechten verbinden. Kann man Zukunftsinteressen überhaupt kennen? Nur die GRUNDBEDÜRFNISSE bleiben gleich, von ihnen kann man ausgehen und Katastrophen vermeiden, alles Weitere überdehnte das Mandat. Bilanz der Folien: mehr Qualifikation, richtigere Anreize, richtiges Allgemeinwohl, weniger Lobbyverzerrung, aber auch mehr Machtfülle.",
+   bsp:"Wir wissen nicht, ob die Menschen 2100 Autos oder Jetpacks wollen. Dass sie atmen, essen und trinken müssen, wissen wir sicher, das reicht als Mandat.",
+   merk:"Die Bilanz spiegelt exakt die vier Probleme vom Anfang, plus den Preis: Machtfülle.",
+   pruef:"Entlastungseinwand: Ungarn nein, Querschnittskompetenz möglich; Zukunftsinteressen: nur Grundbedürfnisse; Vorteile bei allen vier Problemen, Preis: mehr Machtfülle."},
+ ], checks:["d6","d7","d8"]},
+ ]},
 ];
 
-// Kapitel, deren Folien noch fehlen. Werden freigeschaltet, sobald Material lesbar vorliegt.
+// Kapitel, deren Folien noch fehlen.
 export const PENDING_WORLDS = [
- {nr:"10", title:"Klimaethik-Vertiefung (Gesang, Teil 1+2)", note:"Folien liegen noch nicht in lesbarer Form vor"},
- {nr:"11", title:"Demokratie", note:"Folien liegen noch nicht in lesbarer Form vor"},
+ {nr:"10b", title:"Individuelle Klimapflichten, Teil 2", note:"Die PDF zu Teil 2 fehlt noch im Drive-Ordner"},
 ];

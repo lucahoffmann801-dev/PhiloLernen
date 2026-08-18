@@ -11,7 +11,7 @@ WCOLOR.wx = "#c792ea";
 
 const MODES = [["due", "Fällig"], ["mixed", "Gemischt"], ["wrong", "Nur Fehler"], ["x", "Verbindungen"]];
 
-export default function Training() {
+export default function Training({ openBlitz }) {
   const { s, d, grade } = useStore();
   const [mode, setMode] = useState("due");
   const [wf, setWf] = useState(null); // world filter
@@ -52,7 +52,11 @@ export default function Training() {
 
   return (
     <div className="view wrap">
-      <h2>Training</h2>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <h2 style={{ flex: 1 }}>Training</h2>
+        <button className="chip" style={{ background: "#fdf3e2", borderColor: "#f3dcb2", color: "#b57708", fontWeight: 800 }}
+          onClick={openBlitz}>⚡ Blitzrunde</button>
+      </div>
       <p className="sub">Das Klausurformat pur. Kurze Runden, sofortiges Feedback, schwache Karten kommen automatisch früher wieder.</p>
 
       <div className="chips" style={{ marginBottom: 8 }}>

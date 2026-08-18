@@ -9,22 +9,26 @@ const DAY = 864e5;
 export const todayKey = () => new Date().toISOString().slice(0, 10);
 const todayTs = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); };
 
-// Auf 13 Tage gestauchte Wiederholungsintervalle (Tage bis zur Wiedervorlage je Box).
+// Auf die kurze Zeit bis zur Klausur gestauchte Wiederholungsintervalle (Tage je Box).
 const BOX = [0, 1, 1, 2, 3];
-
 const QMAP = Object.fromEntries(QUESTIONS.map(q => [q.id, q]));
+
+// Tagesquests: kleine, sicher erreichbare Ziele mit Bonus-XP.
+export const QUESTS = [
+  { id: "l", emoji: "📖", label: "1 Lektion abschließen", target: 1, xp: 10 },
+  { id: "t", emoji: "🃏", label: "10 Karten im Training", target: 10, xp: 10 },
+  { id: "b", emoji: "⚡", label: "1 Blitzrunde spielen", target: 1, xp: 10 },
+];
 
 function freshState() {
   return {
     xp: 0,
-    lessonsDone: {},        // lessonId -> true
-    bossDone: {},           // worldId -> best score (0..1)
-    cards: {},              // questionId -> {box, due, seen, miss}
-    checks: {},             // planKey -> bool
-    dayXp: {},              // yyyy-mm-dd -> xp
+    lessonsDone: {}, bossDone: {}, cards: {}, checks: {},
+    dayXp: {},                // yyyy-mm-dd -> xp
+    dayStats: {},             // yyyy-mm-dd -> {l,t,b}
+    questsAwarded: {},        // yyyy-mm-dd -> {l:true,...}
     streak: 0, lastStreakDay: null, bestStreak: 0,
-    syncCode: null,
-    stamp: 0,               // monotone Versionsmarke für den Sync
+    syncCode: null, stamp: 0,
   };
 }
 
@@ -41,15 +45,15 @@ function genCode() {
   return "luca-" + s;
 }
 
-// Konservatives Mergen zweier Stände: nimmt jeweils den weiter fortgeschrittenen Teil.
 function merge(a, b) {
   if (!b) return a;
   const out = { ...a };
   out.xp = Math.max(a.xp || 0, b.xp || 0);
   out.lessonsDone = { ...b.lessonsDone, ...a.lessonsDone };
-  out.bossDone = {}; new Set([...Object.keys(a.bossDone||{}), ...Object.keys(b.bossDone||{})])
+  out.bossDone = {};
+  new Set([...Object.keys(a.bossDone || {}), ...Object.keys(b.bossDone || {})])
     .forEach(k => out.bossDone[k] = Math.max(a.bossDone?.[k] ?? 0, b.bossDone?.[k] ?? 0));
-  out.cards = { ...(b.cards||{}) };
+  out.cards = { ...(b.cards || {}) };
   Object.entries(a.cards || {}).forEach(([id, c]) => {
     const o = out.cards[id];
     out.cards[id] = !o ? c : {
@@ -57,12 +61,20 @@ function merge(a, b) {
       seen: Math.max(o.seen, c.seen), miss: Math.max(o.miss, c.miss),
     };
   });
-  out.checks = { ...(b.checks||{}), ...(a.checks||{}) };
-  out.dayXp = { ...(b.dayXp||{}) };
+  out.checks = { ...(b.checks || {}), ...(a.checks || {}) };
+  out.dayXp = { ...(b.dayXp || {}) };
   Object.entries(a.dayXp || {}).forEach(([d, v]) => out.dayXp[d] = Math.max(out.dayXp[d] ?? 0, v));
-  out.bestStreak = Math.max(a.bestStreak||0, b.bestStreak||0);
-  if ((b.stamp||0) > (a.stamp||0)) { out.streak = b.streak; out.lastStreakDay = b.lastStreakDay; }
-  out.stamp = Math.max(a.stamp||0, b.stamp||0);
+  out.dayStats = { ...(b.dayStats || {}) };
+  Object.entries(a.dayStats || {}).forEach(([d, st]) => {
+    const o = out.dayStats[d] || {};
+    out.dayStats[d] = { l: Math.max(o.l ?? 0, st.l ?? 0), t: Math.max(o.t ?? 0, st.t ?? 0), b: Math.max(o.b ?? 0, st.b ?? 0) };
+  });
+  out.questsAwarded = { ...(b.questsAwarded || {}) };
+  Object.entries(a.questsAwarded || {}).forEach(([d, qa]) =>
+    out.questsAwarded[d] = { ...(out.questsAwarded[d] || {}), ...qa });
+  out.bestStreak = Math.max(a.bestStreak || 0, b.bestStreak || 0);
+  if ((b.stamp || 0) > (a.stamp || 0)) { out.streak = b.streak; out.lastStreakDay = b.lastStreakDay; }
+  out.stamp = Math.max(a.stamp || 0, b.stamp || 0);
   out.syncCode = a.syncCode || b.syncCode;
   return out;
 }
@@ -72,23 +84,21 @@ export const useStore = () => useContext(Ctx);
 
 export function StoreProvider({ children }) {
   const [s, setS] = useState(loadLocal);
-  const [syncState, setSyncState] = useState("aus"); // aus | ok | lade | fehler
+  const [syncState, setSyncState] = useState("aus");
   const pushTimer = useRef(null);
   const sRef = useRef(s); sRef.current = s;
 
-  // Beim Start: Remote-Stand holen und mergen.
   useEffect(() => {
     const code = s.syncCode;
     if (!code) return;
     setSyncState("lade");
     pullProgress(code).then(remote => {
       if (remote) setS(cur => ({ ...merge(cur, remote), syncCode: code }));
-      setSyncState(remote === null ? "ok" : "ok");
+      setSyncState("ok");
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Jede Änderung: lokal speichern + debounced pushen.
   useEffect(() => {
     try { localStorage.setItem(KEY, JSON.stringify(s)); } catch {}
     if (!s.syncCode) return;
@@ -101,7 +111,7 @@ export function StoreProvider({ children }) {
   }, [s]);
 
   const api = useMemo(() => {
-    const up = fn => setS(cur => ({ ...fn({ ...cur }), stamp: (cur.stamp||0) + 1 }));
+    const up = fn => setS(cur => ({ ...fn({ ...cur }), stamp: (cur.stamp || 0) + 1 }));
 
     const addXp = (st, n) => {
       st.xp += n;
@@ -116,9 +126,23 @@ export function StoreProvider({ children }) {
       return st;
     };
 
+    // Quest-Zähler erhöhen; erreichtes Ziel schüttet einmalig Bonus-XP aus.
+    const bump = (st, key, n = 1) => {
+      const tk = todayKey();
+      const cur = { l: 0, t: 0, b: 0, ...(st.dayStats[tk] || {}) };
+      cur[key] = (cur[key] ?? 0) + n;
+      st.dayStats = { ...st.dayStats, [tk]: cur };
+      const quest = QUESTS.find(q => q.id === key);
+      const awarded = st.questsAwarded[tk] || {};
+      if (quest && cur[key] >= quest.target && !awarded[key]) {
+        st.questsAwarded = { ...st.questsAwarded, [tk]: { ...awarded, [key]: true } };
+        addXp(st, quest.xp);
+      }
+      return st;
+    };
+
     return {
-      // ---- Spaced Repetition ----
-      grade(qid, g) { // 0 daneben, 1 halb, 2 sass
+      grade(qid, g) {
         up(st => {
           const c = st.cards[qid] ?? { box: 0, due: 0, seen: 0, miss: 0 };
           const n = { ...c, seen: c.seen + 1 };
@@ -127,11 +151,13 @@ export function StoreProvider({ children }) {
           else n.box = Math.min(4, c.box + 1);
           n.due = todayTs() + BOX[n.box] * DAY;
           st.cards = { ...st.cards, [qid]: n };
-          return addXp(st, g === 2 ? 3 : 1);
+          addXp(st, g === 2 ? 3 : 1);
+          return bump(st, "t");
         });
       },
+      quickXp(n) { up(st => addXp(st, n)); },
       finishLesson(lessonId, bonus) {
-        up(st => { st.lessonsDone = { ...st.lessonsDone, [lessonId]: true }; return addXp(st, 10 + (bonus||0)); });
+        up(st => { st.lessonsDone = { ...st.lessonsDone, [lessonId]: true }; addXp(st, 10 + (bonus || 0)); return bump(st, "l"); });
       },
       finishBoss(worldId, score) {
         up(st => {
@@ -139,10 +165,13 @@ export function StoreProvider({ children }) {
           return addXp(st, score >= 0.7 ? 25 : 8);
         });
       },
+      finishBlitz(correct) {
+        up(st => { addXp(st, correct * 2); return bump(st, "b"); });
+      },
       toggleCheck(k) { up(st => { st.checks = { ...st.checks, [k]: !st.checks[k] }; return st; }); },
       setSyncCode(code) {
         const c = (code ?? "").trim() || null;
-        setS(cur => ({ ...cur, syncCode: c, stamp: (cur.stamp||0)+1 }));
+        setS(cur => ({ ...cur, syncCode: c, stamp: (cur.stamp || 0) + 1 }));
         if (c) { setSyncState("lade"); pullProgress(c).then(r => { if (r) setS(cur => ({ ...merge(cur, r), syncCode: c })); setSyncState("ok"); }); }
         else setSyncState("aus");
       },
@@ -151,7 +180,6 @@ export function StoreProvider({ children }) {
     };
   }, []);
 
-  // ---- Abgeleitete Werte ----
   const derived = useMemo(() => {
     const isDue = id => { const c = s.cards[id]; return !c || c.due <= todayTs(); };
     const mastery = id => { const c = s.cards[id]; return c ? c.box / 4 : 0; };
@@ -160,8 +188,6 @@ export function StoreProvider({ children }) {
       const done = w.lessons.filter(l => s.lessonsDone[l.id]).length + ((s.bossDone[w.id] ?? 0) >= 0.7 ? 1 : 0);
       return { done, total, pct: Math.round(100 * done / total), mastered: (s.bossDone[w.id] ?? 0) >= 0.7 };
     };
-    const worldUnlocked = i => true; // bewusst alles offen: Reihenfolge wird empfohlen, nie erzwungen
-    // Nächster Schritt: erste nicht erledigte Lektion / Boss in Reihenfolge.
     let next = null;
     outer: for (const w of WORLDS) {
       for (const l of w.lessons) if (!s.lessonsDone[l.id]) { next = { type: "lesson", world: w, lesson: l }; break outer; }
@@ -170,9 +196,11 @@ export function StoreProvider({ children }) {
     const dueCount = QUESTIONS.filter(q => q.w !== "wx" && isDue(q.id) && (s.cards[q.id]?.seen ?? 0) > 0).length;
     const level = LEVELS.reduce((acc, l, i) => (s.xp >= l.xp ? i : acc), 0);
     const nextLevel = LEVELS[level + 1] ?? null;
-    const todayXp = s.dayXp[todayKey()] ?? 0;
+    const tk = todayKey();
+    const todayXp = s.dayXp[tk] ?? 0;
+    const todayStats = { l: 0, t: 0, b: 0, ...(s.dayStats[tk] || {}) };
     const globalMastery = QUESTIONS.reduce((a, q) => a + mastery(q.id), 0) / QUESTIONS.length;
-    return { isDue, mastery, worldProgress, worldUnlocked, next, dueCount, level, nextLevel, todayXp,
+    return { isDue, mastery, worldProgress, next, dueCount, level, nextLevel, todayXp, todayStats,
       dailyGoal: DAILY_GOAL, globalMastery, qmap: QMAP };
   }, [s]);
 

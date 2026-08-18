@@ -21,7 +21,7 @@ Push auf main → Vercel baut automatisch (Framework-Preset: Vite).
 - `src/data/questions.js` – Fragenpool im Klausurformat (Wahr/Falsch + Ein-Satz-Fragen)
 - `src/data/meta.js` – Lernplan, Philosophen, Verbindungen, Klausurformat
 
-Quellen: Klausurübersicht + Klausurhinweise + Merkblatt (Prof. Gesang) sowie der
-Gastvortrag „KI-Ethik" (Sebastian Zezulka, 13.05.2026). Noch offen: VL 10
-Klimaethik-Vertiefung Teil 1/2 und VL 11 Demokratie (Folien lagen bei Redaktion
-nicht in lesbarer Form vor).
+Quellen: Klausurübersicht + Klausurhinweise + Merkblatt (Prof. Gesang), die
+Vorlesungsfolien VL 01-11 (PDF-Exporte) sowie der Gastvortrag „KI-Ethik"
+(Sebastian Zezulka, 13.05.2026). Noch offen: VL 10 Teil 2 (PDF fehlt) und
+Kapitel 3 des Gastvortrags (Schulabbrecherquoten, beim Auslesen abgeschnitten).

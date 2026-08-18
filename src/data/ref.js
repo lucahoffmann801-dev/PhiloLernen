@@ -1,7 +1,7 @@
 // Nachschlagewerk (Referenztabellen, Argumentkarten, Vergleiche) - vollständiger VL-Stoff.
 // Quelle: Klausuruebersicht (Gesang) + Merkblatt, faktengecheckt.
 export const REF = [
-{id:1, nr:"VL 01", t:"Grundtypen normativer Ethik", hex:"#7aa2ff",
+{id:1, nr:"VL 01", t:"Grundtypen normativer Ethik", hex:"#5b7cfa",
  begriffe:[
   ["Ethik","Wissenschaft bzw. Theorie der Moral. In der Antike zusätzlich: Lehre vom guten Leben."],
   ["Moral","Unparteiliche Berücksichtigung der Interessen und Rechte aller Betroffenen – oder deskriptiv: die de facto gelebte Moral einer Gruppe."],
@@ -29,7 +29,7 @@ export const REF = [
   b:{h:"Hare – Kritik",i:["Intuitionen sind genau das, was moraltheoretisch geprüft werden soll","Sie können nicht zugleich Prüfgegenstand und Prüfinstanz sein","Die Prüfinstanz wäre damit selbst ungeprüft"]}},
  merke:"Häufigster Fehler in der Klausur: Überlegungsgleichgewicht ist NICHT eine Abwägung zwischen verschiedenen Theorien, sondern zwischen Theorie und Intuition. Diese These stand wörtlich in den Klausurhinweisen."},
 
-{id:2, nr:"VL 02", t:"Rationierung im Gesundheitswesen", hex:"#4ecdc4",
+{id:2, nr:"VL 02", t:"Rationierung im Gesundheitswesen", hex:"#0fa396",
  begriffe:[
   ["Rationierung","Verteilung notwendiger, knapper Güter durch zentrale Stellen – gerade nicht über Markt und Zahlungsfähigkeit. Entsteht dort, wo Knappheit zu Einschnitten zwingt."],
   ["Mikro- vs. Makroebene","Mikro: Einzelentscheidung über einen konkreten Patienten. Makro: systemweite Budgetentscheidungen."],
@@ -50,7 +50,7 @@ export const REF = [
   b:{h:"Gegenargumente",i:["Todesverdrängung in der Gesellschaft","Pietät der Angehörigen","Angst, lebend transplantiert zu werden – ist der Hirntod der echte Tod?"]}},
  merke:"Rationalisierung vor Rationierung. Erst wenn alle Effizienzreserven gehoben sind, stellt sich die Verteilungsfrage überhaupt."},
 
-{id:3, nr:"VL 03", t:"Leben, Töten und Embryonen", hex:"#ff8fa3",
+{id:3, nr:"VL 03", t:"Leben, Töten und Embryonen", hex:"#e0566e",
  begriffe:[
   ["Fristenlösung","Abbruch bis zur 12. Woche nach Beratung straffrei – das betrifft rund 98 % der Fälle."],
   ["Nach der 12. Woche","Nur bei medizinischer oder kriminologischer Indikation."],
@@ -71,7 +71,7 @@ export const REF = [
   b:{h:"III – Aktuelles Lebensinteresse (Singer)",i:["Rechte schützen aktuelle Interessen","Ein Lebensinteresse setzt Personensein voraus","Konsequenz: Embryonen und Föten bis ca. 3–6 Monate haben kein Lebensrecht","Einwand: der Schlafende hat auch kein aktuelles Interesse","Singers Antwort: aktive gegen passive Potentialität","Hoerster-Kompromiss: Lebensrecht ab Geburt – pragmatisch, nicht philosophisch exakt"]}},
  merke:"Die drei Theorien sind das Gerüst der ganzen Vorlesung. Wer sie samt je zwei Einwänden benennen kann, hat den Block sicher."},
 
-{id:4, nr:"VL 04", t:"Autonomie und Patientenwille", hex:"#ffd166",
+{id:4, nr:"VL 04", t:"Autonomie und Patientenwille", hex:"#d98f0e",
  begriffe:[
   ["Grundprinzip","Autonome Handlungen vergrößern in der Regel das Wohlergehen des Patienten, weil jeder selbst am besten weiß, was ihm nützt."],
   ["Historisch","Die Medizin war lange paternalistisch. Erst seit Jahrzehnten zählt der informed consent."],
@@ -89,7 +89,7 @@ export const REF = [
   b:{h:"Personale Autonomie",i:["Zielt auf die Autonomie der ganzen Person","Frankfurt: Kohärenz von Wünschen erster und zweiter Ordnung","Ekstrom: Netzwerk kohärenter Wünsche, kontrafaktisch geprüft","Anspruchsvoller – manche Theoretiker halten sie für nötig"]}},
  merke:"Wörtlich aus den Klausurhinweisen: „Handlungsautonomie stellt unstrittig die Autonomie von Personen sicher“ ist FALSCH. Ziel der Handlungsautonomie ist die Autonomie von Handlungen, nicht von Personen."},
 
-{id:5, nr:"VL 05", t:"Sterbehilfe", hex:"#c792ea",
+{id:5, nr:"VL 05", t:"Sterbehilfe", hex:"#8f5cc9",
  begriffe:[
   ["Freiwillige SH","Der Patient will explizit sterben, aufgeklärter Wille liegt vor."],
   ["Nicht-freiwillige SH","Der Patient ist urteilsunfähig, sein Wille ist nicht bekannt."],
@@ -110,7 +110,7 @@ export const REF = [
   b:{h:"Argumente gegen die Legalisierung",i:["Beschädigung des ärztlichen Selbstverständnisses","Schaden für das Arzt-Patienten-Vertrauensverhältnis","Missbrauchspotenzial: Mord, Habsucht","Dammbruch: von der freiwilligen ASH zur Tötung aus sozialen Gründen ohne Patientenwillen"]}},
  merke:"Dammbruchargument: Zustand A wird nicht direkt kritisiert, sondern als wahrscheinlicher Schritt zu einem katastrophalen Zustand B. Kritik: die Wahrscheinlichkeit muss begründet werden, und Schutzmechanismen könnten A auf A begrenzen."},
 
-{id:6, nr:"VL 06", t:"Absolute Armut und Spendepflicht", hex:"#ff9f68",
+{id:6, nr:"VL 06", t:"Absolute Armut und Spendepflicht", hex:"#e06d2e",
  begriffe:[
   ["Fakten","Rund 700 Millionen Menschen leben von weniger als 1,90 USD am Tag. Jährlich sterben etwa 5 Millionen Kinder an Unterernährung."],
   ["Singers Grundprinzip","Wenn es in unserer Macht steht, etwas Schlechtes zu verhindern, ohne etwas von vergleichbarer moralischer Bedeutung zu opfern, sollten wir es tun."],
@@ -130,7 +130,7 @@ export const REF = [
   b:{h:"Rawls und Pogge",i:["Rawls: nationaler Egalitarismus, globaler Prioritarismus wird abgelehnt","Rawls: nur Unterstützungspflicht für wohlgeordnete Gesellschaften, keine globale Verteilungsgerechtigkeit","Kritik an Rawls: die berühmteste Gerechtigkeitstheorie ignoriert das größte Gerechtigkeitsproblem","Pogge: Weltarmut geht auf Institutionen der Industrieländer zurück – nicht „ich muss helfen\“, sondern „ich tue Unrecht\“","Pogge fordert eine Rohstoffdividende zur Kompensation","Kritik an Pogge: positive Pflichten aus negativen herzuleiten überzeugt nicht vollständig"]}},
  merke:"Der entscheidende Unterschied: Singer argumentiert mit einer positiven Hilfspflicht, Pogge mit einer negativen Unterlassungspflicht. Das ist eine beliebte Wahr-Falsch-These."},
 
-{id:7, nr:"VL 07", t:"Umweltethik und Biodiversität", hex:"#8ce99a",
+{id:7, nr:"VL 07", t:"Umweltethik und Biodiversität", hex:"#2f9e44",
  begriffe:[
   ["Instrumenteller Wert der BD","Genetische Reserven für anfällige Kulturpflanzen, medizinische Wirkstoffe, ästhetischer Wert, Ökosystemdienstleistungen wie Bestäubung und Klimaregulation."],
   ["Intrinsischer Wert der BD","Nach Ehrenfeld und anderen ist Biodiversität ein Wert an sich, unabhängig vom menschlichen Nutzen."],
@@ -146,7 +146,7 @@ export const REF = [
   b:{h:"An sich – intrinsisch",i:["Ehrenfeld und andere: Eigenwert unabhängig vom Nutzen","Setzt voraus, dass es Wertträger ohne wertendes Subjekt gibt","Genau das ist der Schwachpunkt des Ökozentrismus"]}},
  merke:"Fazit der Vorlesung: der Pathozentrismus ist am stärksten begründet. Es gibt keinen eigenständigen Artenschutz ohne Bezug auf empfindungsfähige Wesen. Wo kein direkter Biodiversitätsnutzen für uns erkennbar ist, hat Klimaschutz Vorrang."},
 
-{id:8, nr:"VL 08", t:"Klimaethik und Klimagerechtigkeit", hex:"#66d9ff",
+{id:8, nr:"VL 08", t:"Klimaethik und Klimagerechtigkeit", hex:"#0b93c9",
  begriffe:[
   ["Treibhauseffekt","Sonnenstrahlung wird von der Erde als langwellige Wärme zurückgestrahlt. Treibhausgase absorbieren und reflektieren einen Teil davon – Wärmestau."],
   ["Kipppunkte","Ab über 1,5 °C: Methanfreisetzung aus Permafrost, CO2 aus Bodenbakterien, Regenwaldbrände, Methanhydrat am Meeresgrund. Worst Case (Hadley Center, +6 °C): zusätzliche 20–200 ppm CO2 aus Rückkopplungen."],
@@ -164,8 +164,52 @@ export const REF = [
  cmp:{t:"Climate Engineering",
   a:{h:"Pro CE-Forschung",i:["Argument des geringeren Übels: CE ist ein Übel, aber geringer als eine globale Klimakatastrophe","Viele Theoretiker plädieren für einen Portfolio-Ansatz: Mitigation, Adaption und CE gleichzeitig"]},
   b:{h:"Contra CE-Forschung",i:["Gardiner (2011), deontologisch: manche Übel sind zu groß, um den Zweck zu heiligen","Reduziert CE-Forschung die Motivation zur Emissionsvermeidung?","Ein globaler Einsatz kann einigen Regionen nutzen und anderen massiv schaden"]}},
- merke:"Klausur-Tipp aus der Übersicht: Diskutiere das Prinzip gleicher Pro-Kopf-Rechte. Dafür sprechen Gleichheit und Fairness, dagegen regionale Unterschiede, historische Emissionen und die praktische Umsetzbarkeit."}
+ merke:"Klausur-Tipp aus der Übersicht: Diskutiere das Prinzip gleicher Pro-Kopf-Rechte. Dafür sprechen Gleichheit und Fairness, dagegen regionale Unterschiede, historische Emissionen und die praktische Umsetzbarkeit."},
+{id:10, nr:"VL 10", t:"Individuelle Klimapflichten (Teil 1)", hex:"#c0392b",
+ begriffe:[
+  ["Ausgangsfrage","„Wir müssen sofort handeln!“ Aber wer ist „wir“? Der Staat sollte koordinieren und sichern, dass genügend Leute mitziehen, versagt aber. Wenn Staaten versagen, müssen Individuen aushelfen."],
+  ["Standardstrategie","Der Einzelne stellt sein privates Emissionsverhalten um: Verzicht auf Fleisch, Fliegen, Autos, belohnt mit sozialer und eigener Anerkennung. Laut Vorlesung ein Ausdruck der Hilflosigkeit."],
+  ["Hindernis Motivation","Wer macht da noch mit? Gewinnt man so neue Mitstreiter?"],
+  ["Hindernis Effektivität","Führt der eigene schmerzhafte Beitrag überhaupt zu einer Verbesserung?"],
+  ["Doktrin vom großen Unterschied","Einwände: a) Trittbrettfahren wird legitimiert, b) die Wirkungen des Konsumentenverhaltens werden verschenkt."],
+  ["Epistemik","Sehr nützliche oder schädliche Handlungen lassen sich gut schätzen, die Unterschiede zwischen Alternativen sind groß. Bei kleinen Unterschieden wird die Schätzung fehleranfällig."]],
+ arg:{t:"Vom Staatsversagen zum wirksamen Beitrag",
+  steps:[
+   {p:"P1",k:0,x:"Der Staat sollte den Klimaschutz koordinieren, versagt aber."},
+   {p:"P2",k:0,x:"Wenn Staaten versagen, müssen Individuen aushelfen."},
+   {p:"Frage",k:0,x:"Welcher individuelle Beitrag ist der richtige?"},
+   {p:"K",k:1,x:"Prüfe, ob dein Beitrag nur kleine Verbesserungen bringt, während du größere bewirken könntest, etwa durch wirksames Spenden."}]},
+ cmp:{t:"Standardstrategie vs. Wirksamkeitsstrategie",
+  a:{h:"Standardstrategie",i:["Privaten Konsum umstellen: Fleisch, Fliegen, Auto","Belohnung: soziale und eigene Anerkennung","Probleme: Motivation und Effektivität"]},
+  b:{h:"Wirksamkeitsdenken",i:["Vergleiche die Größe der möglichen Verbesserungen","Große Schäden/Gewinne sind gut schätzbar","Titel-These: Spenden kann mehr bewirken als Fahrradfahren"]}},
+ merke:"Teil 2 der Vorlesung liegt noch nicht in lesbarer Form vor. Dieser Eintrag basiert auf Teil 1."},
+{id:11, nr:"VL 11", t:"Demokratie in der Krise", hex:"#1d6fb8",
+ begriffe:[
+  ["Qualifikationsprobleme","Politiker und Wähler sind von der Komplexität oft überfordert (Beispiel Energiewende: Woran liegt die Strompreissteigerung?)."],
+  ["Falsche Anreize","Politiker: Wiederwahl. Bürger: Steuern runter, Arbeitsplatzsicherheit rauf."],
+  ["Falsches Allgemeinwohlverständnis","Nur die eigene Wählerschaft zählt. Nach der Moraldefinition (Interessen aller Betroffenen gleichermaßen) ist das unmoralisch; Sonderbeachtung des eigenen Staats nur aus praktischen Gründen, mit Grenzen."],
+  ["Lobbyismus","Das bestorganisierte, nicht das wichtigste Interesse siegt (Beispiele: Energiewende, Ampel-Kennzeichnung, EU-CO2-Grenzwerte, Emissionshandel)."],
+  ["Churchill-Zitat","Demokratie ist die schlechteste Regierungsform, ausgenommen alle anderen. Folgerung: Sie braucht konkrete Reparaturen."],
+  ["Basisdemokratie","Idee: Bürger entscheiden direkt und am Allgemeinwohl orientiert. These: Nein, Homo Oeconomicus. Beleg: Bonoli/Häusermann 2009, Alter als sicherer Indikator des Abstimmungsverhaltens in der Schweiz."],
+  ["Geißler-Kontroverse","Geißler: Nach dialektischer Informationsphase entscheiden Bürger nachhaltig. Konter: Die Schweiz stimmte auch wohlinformiert gegen mehr Europa."],
+  ["Fazit Basisdemokratie","Ergänzend, nicht alternativ: Identifikation, Aktivierung, Glück durch Partizipation; aber Bürger wie Politiker wälzen Kosten auf die Zukunft ab."],
+  ["Zukunftsräte / Ombudspersonen","Anwälte zukünftiger Generationen in heutigen Gremien: der Zukunft ein Stimmrecht geben. Beispiel Ungarn."],
+  ["Kompetenzfragen","Beratergremium oder vierte Gewalt: Akteneinsicht, Veröffentlichungsrecht, Gesetzesinitiative, Rede-, Ermittlungs-, Klagerecht, suspensives oder vollwertiges Veto; lange Amtsperioden; Unabhängigkeit über parteifreie Nominierung."],
+  ["Interessen der Zukunft","Nur Grundbedürfnisse bleiben gleich; von ihnen ausgehen und Katastrophen vermeiden, alles Weitere überdehnte das Mandat."]],
+ arg:{t:"Der Ökodiktatur-Einwand und die Antworten",
+  steps:[
+   {p:"Einw.",k:2,x:"Wird ein Zukunftsrat mit Vetorecht nicht undemokratisch, gar eine Ökodiktatur?"},
+   {p:"A1",k:0,x:"Die Gewaltenteilung bleibt; klares, gesetzlich verankertes Mandat."},
+   {p:"A2",k:0,x:"Überstimmung oder Abwahl mit Zweidrittelmehrheit des Parlaments, gerichtliche Kontrolle."},
+   {p:"A3",k:0,x:"Machtmissbrauch ist so wahrscheinlich wie bei anderen Regierungsorganen."},
+   {p:"A4",k:0,x:"Legitimation auch ohne Direktwahl: Bundesrat, EZB, EU-Kommission; zudem Verfassungsstaatsprinzip."},
+   {p:"Ott",k:1,x:"Die Gefahr einer Ökodiktatur beschwören vor allem die, die alles tun, um eine solche nötig zu machen."}]},
+ cmp:{t:"Die Bilanz der Reformvorschläge",
+  a:{h:"Gewinne",i:["Qualifikation: mehr","Anreize: richtiger","Allgemeinwohlverständnis: richtig","Lobbyismus: richtiger"]},
+  b:{h:"Preis und offene Fragen",i:["Machtfülle: mehr","Durchsetzbarkeit: Politiker müssten Macht abgeben","Alternative: Zukunftsschutz als Staatsziel in die Verfassung","Notfalls Etablierung zunächst auf NGO-Ebene"]}},
+ merke:"Umgekehrte Diskriminierung zugunsten der Zukunft wird über MEHR langfristige Gleichheit gerechtfertigt: Ohne Nachhaltigkeit ist die Demokratie selbst in Gefahr. Das begründet eine Sonderstellung zukünftiger Generationen."},
 ];
+
 
 export const PHILS = [
  ["Immanuel Kant","Deontologie","Kategorischer Imperativ, Menschenwürde, Instrumentalisierungsverbot","VL 01, 05, 07"],
