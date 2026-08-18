@@ -1,0 +1,10 @@
+{
+  "name": "PhiloLernen",
+  "short_name": "PhiloLernen",
+  "description": "Lernpfad für die Klausur Angewandte Ethik",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0e14",
+  "theme_color": "#0b0e14",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
