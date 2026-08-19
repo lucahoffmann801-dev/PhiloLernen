@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { fxCorrect, fxWrong } from "./fx.js";
 import SpeakButton from "./SpeakButton.jsx";
 
+// Musterbegründung in prüfbare Kernelemente zerlegen (Satz-/Semikolonweise).
+export function clauses(b) {
+  return b.split(/(?<=[.;!?])\s+/).map(x => x.trim()).filter(x => x.length > 12).slice(0, 3);
+}
+
 // Eine Frage im Klausurformat mit Sicherheits-Check (Hypercorrection).
 // onDone(grade, conf) — grade: 0/1/2, conf: 0 geraten / 1 unsicher / 2 sicher.
 const CONF = [["🎲", "Geraten"], ["🤔", "Unsicher"], ["💪", "Sicher"]];
@@ -85,17 +90,36 @@ export default function Question({ q, worldName, color, onDone, simple, pretest 
               <button onClick={() => onDone(isTf ? (hit ? 2 : 0) : 2, conf)}>Weiter</button>
             </div>
           ) : (
-            <>
-              <p className="small muted" style={{ marginTop: 12 }}>Und deine eigene Begründung, wie nah dran war sie?</p>
-              <div className="sr3">
-                <button style={{ color: "var(--no)" }} onClick={() => onDone(0, conf)}>Daneben<small>kommt bald wieder</small></button>
-                <button style={{ color: "var(--warn)" }} onClick={() => onDone(1, conf)}>Halb<small>bald wieder</small></button>
-                <button style={{ color: "var(--ok)" }} onClick={() => onDone(2, conf)}>Saß<small>Abstand wächst</small></button>
-              </div>
-            </>
+            <Checklist b={q.b} onDone={g => onDone(g, conf)} />
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+// Ehrliche Selbstbewertung: Kernelemente der Musterbegründung abhaken statt Bauchgefühl.
+function Checklist({ b, onDone }) {
+  const items = clauses(b);
+  const [checked, setChecked] = useState(() => items.map(() => false));
+  const ratio = items.length ? checked.filter(Boolean).length / items.length : 0;
+  const grade = ratio === 1 ? 2 : ratio >= 0.5 ? 1 : 0;
+  const label = grade === 2 ? "Saß ✓ · Abstand wächst" : grade === 1 ? "Halb · kommt bald wieder" : "Daneben · kommt morgen wieder";
+  return (
+    <div style={{ marginTop: 14, borderTop: "1.5px dashed var(--line)", paddingTop: 12 }}>
+      <p className="small muted" style={{ marginBottom: 8 }}>Ehrlich abhaken: Welche Kernelemente hatte DEINE Begründung?</p>
+      <div style={{ display: "grid", gap: 7 }}>
+        {items.map((it, i) => (
+          <label key={i} style={{ display: "flex", gap: 9, alignItems: "flex-start", fontSize: 13.5, cursor: "pointer", lineHeight: 1.45 }}>
+            <input type="checkbox" checked={checked[i]}
+              onChange={() => setChecked(c => c.map((x, j) => j === i ? !x : x))}
+              style={{ marginTop: 2, width: 17, height: 17, accentColor: "var(--ok)", flex: "none" }} />
+            <span>{it}</span>
+          </label>
+        ))}
+      </div>
+      <button className="btn" style={{ marginTop: 12, background: grade === 2 ? "var(--ok)" : grade === 1 ? "var(--warn)" : "var(--no)" }}
+        onClick={() => onDone(grade)}>{label}</button>
     </div>
   );
 }

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useStore } from "../lib/store.jsx";
 import { WORLDS, PENDING_WORLDS } from "../data/content.js";
 
-export default function Path({ openPlayer }) {
+export default function Path({ openPlayer, openListen }) {
   const { s, d } = useStore();
   const nextId = d.next ? (d.next.lesson ? d.next.lesson.id : "boss-" + d.next.world.id) : null;
   const [open, setOpen] = useState(() => d.next ? d.next.world.id : WORLDS[0].id);
@@ -47,6 +47,12 @@ export default function Path({ openPlayer }) {
                   </button>
                 );
               })}
+              <button className="lrow" onClick={() => openListen(w)}>
+                <span className="ldot">🎧</span>
+                <span className="lt"><b>Kapitel anhören</b>
+                  <span>Alle Konzepte als Audio-Strecke, automatisch weiter</span></span>
+                <span className="go-ic">→</span>
+              </button>
               <button className={"lrow boss" + ((s.bossDone[w.id] ?? 0) >= 0.7 ? " done" : "") + (nextId === "boss-" + w.id ? " next" : "")}
                 onClick={() => openPlayer({ world: w, boss: true })}>
                 <span className="ldot">👑</span>

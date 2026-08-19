@@ -4,6 +4,8 @@ import { Ring } from "../lib/ui.jsx";
 import { LEVELS, PLAN } from "../data/meta.js";
 import { WORLDS } from "../data/content.js";
 import { TERMS } from "../data/begriffe.js";
+import { QUESTIONS } from "../data/questions.js";
+import { EXAM_TS } from "../data/meta.js";
 
 const OWL_TIPS = [
   "Kleine Schritte zählen doppelt. Eine Lektion reicht, um den Tag zu gewinnen.",
@@ -22,7 +24,7 @@ function owlState({ d, s, frozenOnLoad }) {
   return ["🦉", OWL_TIPS[day % OWL_TIPS.length]];
 }
 
-export default function Home({ openPlayer, openBlitz, openExam, openDojo, goto, openTimer, startWarmstart }) {
+export default function Home({ openPlayer, openBlitz, openExam, openDojo, goto, openTimer, startPreset }) {
   const { s, d, toggleCheck, frozenOnLoad } = useStore();
   const next = d.next;
   const lvl = LEVELS[d.level];
@@ -32,7 +34,16 @@ export default function Home({ openPlayer, openBlitz, openExam, openDojo, goto, 
   const start = new Date(2026, 7, 18).getTime();
   const idx = Math.max(0, Math.min(PLAN.length - 1, Math.round((Date.now() - start) / 864e5)));
   const plan = PLAN[idx];
-  const showWarm = d.todayStats.t === 0 && d.warmstart.length > 0;
+  // Tagesdosis: fällige + schwache Karten + Verbindungen, fertig gemischt (~12 Stück)
+  function buildDose() {
+    const seen = QUESTIONS.filter(q => q.w !== "wx" && (s.cards[q.id]?.seen ?? 0) > 0);
+    const due = seen.filter(q => d.isDue(q.id)).sort((a, b) => d.mastery(a.id) - d.mastery(b.id)).slice(0, 6).map(q => q.id);
+    const inbox = d.inbox.filter(id => !due.includes(id)).slice(0, 2);
+    const wx = QUESTIONS.filter(q => q.w === "wx").sort(() => Math.random() - 0.5).slice(0, 2).map(q => q.id);
+    const fresh = QUESTIONS.filter(q => q.w !== "wx" && !(s.cards[q.id]?.seen))
+      .sort(() => Math.random() - 0.5).slice(0, Math.max(0, 12 - due.length - inbox.length - wx.length)).map(q => q.id);
+    return [...due, ...inbox, ...fresh, ...wx];
+  }
 
   return (
     <div className="view wrap">
@@ -41,16 +52,17 @@ export default function Home({ openPlayer, openBlitz, openExam, openDojo, goto, 
         <span className="bubble">{owlLine}</span>
       </div>
 
-      {showWarm && (
-        <button className="warmcard" onClick={startWarmstart}>
-          <span className="em">☀️</span>
-          <span style={{ flex: 1 }}>
-            <b>Warmstart: 3 Karten, 60 Sekunden</b>
-            <span>Deine wackligsten Karten von zuletzt. Der leichteste Einstieg in den Tag.</span>
-          </span>
-          <span style={{ fontSize: 18 }}>→</span>
-        </button>
-      )}
+      <button className="dosecard" onClick={() => startPreset({
+          ids: buildDose(),
+          label: "🍊 Tagesdosis",
+          sub: "Fällige, Fehler, Verbindungen und etwas Neues, fertig gemischt. Etwa 10 Minuten." })}>
+        <span className="em">🍊</span>
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <b>Tagesdosis · ~10 Minuten</b>
+          <span>{d.todayStats.t === 0 ? "Der leichteste Einstieg: einfach drücken, ich stelle alles zusammen." : "Noch eine Runde? Ich mische wieder das Wichtigste."}</span>
+        </span>
+        <span style={{ fontSize: 18 }}>→</span>
+      </button>
 
       <div className="hero-next">
         <span className="tag">Dein nächster Schritt</span>
@@ -146,6 +158,7 @@ export default function Home({ openPlayer, openBlitz, openExam, openDojo, goto, 
       )}
 
       <div className="card" style={{ marginBottom: 12 }}>
+        <Coach s={s} d={d} />
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
           <h3 style={{ fontSize: 15 }}>Heute laut Plan: {plan.h}</h3>
           {plan.m && <span className="mile">{plan.m}</span>}
@@ -181,6 +194,28 @@ export default function Home({ openPlayer, openBlitz, openExam, openDojo, goto, 
           Heute: {d.todayStats.t} Karten · {d.todayStats.l} Lektionen · {d.todayStats.b} Blitzrunden · {d.todayXp} XP
         </p>
       </div>
+    </div>
+  );
+}
+
+// Adaptiver Rest-Coach: rechnet täglich, was bei DEINEM Tempo heute nötig ist.
+function Coach({ s, d }) {
+  const daysLeft = Math.max(1, Math.ceil((EXAM_TS - Date.now()) / 864e5));
+  const crownsOpen = WORLDS.filter(w => !d.worldProgress(w).mastered);
+  const termsOpen = TERMS.filter(t => (s.terms?.[t.id]?.typedOk ?? 0) < 2).length;
+  const lessonsOpen = WORLDS.reduce((a, w) => a + w.lessons.filter(l => !s.lessonsDone[l.id]).length, 0);
+  const parts = [];
+  if (crownsOpen.length) {
+    const perDay = Math.ceil(crownsOpen.length / Math.max(1, daysLeft - 2)); // 2 Puffertage vor der Klausur
+    parts.push(`${perDay > 1 ? perDay + " Kronen" : "1 Krone"} (als Nächstes: ${crownsOpen[0].title})`);
+  }
+  if (termsOpen) parts.push(`${Math.ceil(termsOpen / Math.max(1, daysLeft - 1))} Begriffe im Dojo`);
+  if (d.dueCount) parts.push(`${Math.min(d.dueCount, 25)} fällige Karten`);
+  return (
+    <div className="coachline">
+      <b>Rest-Coach:</b> Noch {daysLeft} {daysLeft === 1 ? "Tag" : "Tage"} · offen: {crownsOpen.length} Kronen, {termsOpen} Begriffe{lessonsOpen ? `, ${lessonsOpen} Lektionen` : ""}. {parts.length
+        ? <>Dein Soll heute: {parts.join(" + ")}. Schaffbar.</>
+        : <>Alles offen Geübte ist im Plan. Heute zählt Wiederholung.</>}
     </div>
   );
 }

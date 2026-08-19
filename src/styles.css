@@ -428,3 +428,36 @@ h2{font-size:23px;font-weight:800;letter-spacing:-.5px}
 .dojocard b{display:block;font-size:15px}
 .dojocard span{font-size:12px;opacity:.9}
 .dojocard .pbar{background:rgba(255,255,255,.25);margin-top:6px;height:5px}
+
+/* ---------- v2.5: Lückentext, Coach, Hör-Modus, Radar, Spickzettel ---------- */
+.clozein{display:inline-block;background:#fff;border:none;border-bottom:2.5px solid var(--acc);
+  border-radius:4px 4px 0 0;padding:2px 6px;margin:0 2px;font-weight:700;color:var(--acc);outline:none}
+.dosecard{background:linear-gradient(135deg,#f9a75e,#f67d6f);border-radius:var(--r);padding:16px;
+  color:#fff;margin-bottom:12px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:12px;
+  width:100%;text-align:left;transition:.15s}
+.dosecard:active{transform:scale(.98)}
+.dosecard .em{font-size:26px;flex:none}
+.dosecard b{display:block;font-size:15px}
+.dosecard span{font-size:12px;opacity:.92}
+.coachline{background:#e8edff;border:1px solid #ccd8ff;border-radius:12px;padding:10px 13px;
+  font-size:13px;color:#37549e;line-height:1.5;margin-bottom:10px}
+.coachline b{color:#243c85}
+.listenbig{text-align:center;margin:auto 0}
+.listenbig .lterm{font-size:26px;font-weight:800;letter-spacing:-.5px;margin:10px 0 6px}
+.listenbig .lphase{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--tx3);font-weight:800}
+.listenbig .ltext{font-size:15px;color:var(--tx2);max-width:44ch;margin:0 auto;line-height:1.6}
+.listenctl{display:flex;gap:12px;justify-content:center;align-items:center;margin-top:22px}
+.listenctl .big{width:64px;height:64px;border-radius:99px;background:var(--acc);color:#fff;
+  font-size:24px;display:grid;place-items:center;box-shadow:0 6px 18px rgba(91,124,250,.35)}
+.listenctl .side{width:46px;height:46px;border-radius:99px;background:var(--bg2);
+  border:1px solid var(--line);display:grid;place-items:center;font-size:17px;box-shadow:var(--shadow)}
+.radar-row{display:grid;grid-template-columns:110px 1fr 40px;gap:10px;align-items:center;
+  font-size:12.5px;padding:7px 0}
+.radar-row b{font-size:12px}
+@media print{
+  .bnav,.topbar,.chips,.btn,.speakbtn{display:none !important}
+  body{background:#fff !important}
+  .sheetprint{box-shadow:none !important;border:none !important}
+  .noprint{display:none !important}
+  .printpage{page-break-after:always}
+}

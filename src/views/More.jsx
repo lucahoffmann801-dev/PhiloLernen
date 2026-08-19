@@ -2,24 +2,115 @@ import React, { useEffect, useState } from "react";
 import SpeakButton from "../lib/SpeakButton.jsx";
 import * as tts from "../lib/tts.js";
 import { findEsel } from "../lib/esel.js";
+import { QUESTIONS } from "../data/questions.js";
+import { WORLDS } from "../data/content.js";
+import { TERMS, PAIRS } from "../data/begriffe.js";
 import { useStore } from "../lib/store.jsx";
 import { REF } from "../data/ref.js";
 import { FORMAT, PLAN } from "../data/meta.js";
 
-export default function More({ toast }) {
+export default function More({ toast, startPreset }) {
   const [tab, setTab] = useState("ref");
   return (
     <div className="view wrap">
       <div className="chips" style={{ marginBottom: 18 }}>
-        {[["ref", "Nachschlagen"], ["plan", "13-Tage-Plan"], ["format", "Klausurformat"], ["sync", "Einstellungen"]].map(([t, l]) => (
+        {[["ref", "Nachschlagen"], ["radar", "Radar"], ["spick", "Spickzettel"], ["plan", "Plan"], ["format", "Klausur"], ["sync", "Einstellungen"]].map(([t, l]) => (
           <button key={t} className={"chip" + (tab === t ? " on" : "")} onClick={() => setTab(t)}>{l}</button>
         ))}
       </div>
       {tab === "ref" && <Ref />}
+      {tab === "radar" && <Radar startPreset={startPreset} />}
+      {tab === "spick" && <Spick />}
       {tab === "plan" && <Plan />}
       {tab === "format" && <Format />}
       {tab === "sync" && <Sync toast={toast} />}
     </div>
+  );
+}
+
+const WNAME2 = Object.fromEntries(WORLDS.map(w => [w.id, w.nr === "GV" ? "Gastvortrag" : "Kap. " + w.nr]));
+
+// Schwächen-Radar: die wackligsten Kapitel und Karten, mit direktem Übungs-Knopf.
+function Radar({ startPreset }) {
+  const { s, d } = useStore();
+  const perWorld = WORLDS.map(w => {
+    const qs = QUESTIONS.filter(q => q.w === w.id);
+    const m = qs.reduce((a, q) => a + d.mastery(q.id), 0) / qs.length;
+    return { w, m };
+  }).sort((a, b) => a.m - b.m);
+  const weakest = QUESTIONS.filter(q => q.w !== "wx" && (s.cards[q.id]?.seen ?? 0) > 0)
+    .sort((a, b) => d.mastery(a.id) - d.mastery(b.id)).slice(0, 10);
+  const weakestIds = weakest.map(q => q.id);
+  return (
+    <>
+      <h2>Schwächen-Radar</h2>
+      <p className="sub">Ehrlicher Blick: Wo wackelt es noch? Die schwächsten Kapitel stehen oben.</p>
+      <div className="card" style={{ marginBottom: 12 }}>
+        {perWorld.map(({ w, m }) => (
+          <div className="radar-row" key={w.id}>
+            <b style={{ color: w.color }}>{WNAME2[w.id]}</b>
+            <span className="pbar"><i style={{ width: (m * 100) + "%", background: w.color }} /></span>
+            <span className="mono muted">{Math.round(m * 100)}%</span>
+          </div>
+        ))}
+      </div>
+      <div className="card">
+        <h3 style={{ fontSize: 15, marginBottom: 6 }}>Deine 10 wackligsten Karten</h3>
+        {weakest.length ? (
+          <>
+            <div style={{ display: "grid", gap: 6, marginBottom: 12 }}>
+              {weakest.map(q => (
+                <p key={q.id} className="small muted" style={{ lineHeight: 1.4 }}>
+                  <b style={{ color: "var(--tx)" }}>{WNAME2[q.w]}:</b> {q.t.slice(0, 80)}{q.t.length > 80 ? "…" : ""}
+                </p>
+              ))}
+            </div>
+            <button className="btn" onClick={() => startPreset({ ids: weakestIds, label: "🎯 Schwächen-Paket", sub: "Deine 10 wackligsten Karten, gezielt." })}>
+              Diese 10 jetzt üben →
+            </button>
+          </>
+        ) : <p className="small muted">Noch keine Daten. Erst ein paar Karten trainieren, dann zeigt das Radar, wo es hakt.</p>}
+      </div>
+    </>
+  );
+}
+
+// Spickzettel: druckbare Kompakt-Übersicht (Merksätze, Eselsbrücken, Kontrastpaare).
+function Spick() {
+  return (
+    <>
+      <div className="noprint">
+        <h2>Spickzettel</h2>
+        <p className="sub">Zum Ausdrucken oder als PDF sichern (über den Drucken-Dialog). Für den Küchentisch und den Abend vorher, nicht für den Klausurtisch. 😄</p>
+        <button className="btn" style={{ marginBottom: 16 }} onClick={() => window.print()}>🖨️ Drucken / als PDF sichern</button>
+      </div>
+      <div className="card sheetprint">
+        <h3 style={{ fontSize: 16, marginBottom: 10 }}>🧠 Alle Eselsbrücken</h3>
+        <div style={{ display: "grid", gap: 7 }}>
+          {TERMS.map(t => (
+            <p key={t.id} style={{ fontSize: 12.5, lineHeight: 1.45 }}>
+              <b>{t.term}:</b> {t.esel}{t.wort ? <span style={{ color: "var(--tx3)" }}> ({t.wort})</span> : null}
+            </p>
+          ))}
+        </div>
+        <h3 style={{ fontSize: 16, margin: "18px 0 10px" }}>⚔️ Verwechslungspaare</h3>
+        <div style={{ display: "grid", gap: 7 }}>
+          {PAIRS.map(p => (
+            <p key={p.a} style={{ fontSize: 12.5, lineHeight: 1.45 }}>
+              <b>{p.a} vs. {p.b}:</b> {p.kontrast}
+            </p>
+          ))}
+        </div>
+        <h3 style={{ fontSize: 16, margin: "18px 0 10px" }}>💡 Merksätze der Kapitel</h3>
+        <div style={{ display: "grid", gap: 7 }}>
+          {REF.map(v => (
+            <p key={v.id} style={{ fontSize: 12.5, lineHeight: 1.45 }}>
+              <b>{v.nr} {v.t}:</b> {v.merke}
+            </p>
+          ))}
+        </div>
+      </div>
+    </>
   );
 }
 
