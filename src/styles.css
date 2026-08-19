@@ -406,3 +406,25 @@ h2{font-size:23px;font-weight:800;letter-spacing:-.5px}
 .volrow input[type=range]{flex:1;accent-color:var(--mint);height:28px}
 .hintbox{background:var(--bg3);border-radius:12px;padding:10px 13px;font-size:12.5px;
   color:var(--tx2);margin-bottom:12px;line-height:1.5}
+
+/* ---------- v2.4: Begriffs-Dojo & Eselsbrücken ---------- */
+.eselbox{background:#f6f0fc;border:1px solid #ddc7f2;border-radius:13px;padding:12px 14px;margin-bottom:13px}
+.eselbox .h{font-size:10px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:var(--purple);margin-bottom:4px}
+.eselbox p{font-size:14px;line-height:1.55;color:#4d3a63}
+.matchgrid{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;margin-top:16px}
+.matchgrid>div{display:grid;gap:8px;align-content:start}
+.mbtn{padding:10px 11px;border-radius:12px;border:2px solid var(--line);background:var(--bg3);
+  font-size:12.5px;font-weight:600;text-align:left;line-height:1.35;transition:.12s;min-height:44px}
+.mbtn.term{font-weight:800;font-size:13px}
+.mbtn.sel{border-color:var(--purple);background:#f6f0fc}
+.mbtn.ok{border-color:var(--ok);background:#e8f7ee;opacity:.55}
+.mbtn.bad{border-color:var(--no);background:#fdecec;animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.dojocard{background:linear-gradient(135deg,#8f5cc9,#6d5cc9);border-radius:var(--r);padding:16px;
+  color:#fff;margin-bottom:12px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:12px;
+  width:100%;text-align:left;transition:.15s}
+.dojocard:active{transform:scale(.98)}
+.dojocard .em{font-size:26px;flex:none}
+.dojocard b{display:block;font-size:15px}
+.dojocard span{font-size:12px;opacity:.9}
+.dojocard .pbar{background:rgba(255,255,255,.25);margin-top:6px;height:5px}

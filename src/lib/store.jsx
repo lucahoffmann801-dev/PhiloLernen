@@ -25,7 +25,7 @@ export const QUESTS = [
 function freshState() {
   return {
     xp: 0,
-    lessonsDone: {}, bossDone: {}, cards: {}, checks: {},
+    lessonsDone: {}, bossDone: {}, cards: {}, checks: {}, terms: {},
     dayXp: {}, dayStats: {}, questsAwarded: {},
     streak: 0, lastStreakDay: null, bestStreak: 0,
     freezesUsed: 0,          // sanfte Streak: 2 Schoner für Lücken-Tage
@@ -71,6 +71,12 @@ function merge(a, b) {
     out.cards[id] = out.cards[id] ? mergeCard(out.cards[id], c) : c;
   });
   out.checks = { ...(b.checks || {}), ...(a.checks || {}) };
+  out.terms = { ...(b.terms || {}) };
+  Object.entries(a.terms || {}).forEach(([id, t]) => {
+    const o = out.terms[id] || {};
+    out.terms[id] = { seen: Math.max(o.seen ?? 0, t.seen ?? 0),
+      typedOk: Math.max(o.typedOk ?? 0, t.typedOk ?? 0), fails: Math.max(o.fails ?? 0, t.fails ?? 0) };
+  });
   out.dayXp = { ...(b.dayXp || {}) };
   Object.entries(a.dayXp || {}).forEach(([d, v]) => out.dayXp[d] = Math.max(out.dayXp[d] ?? 0, v));
   out.dayStats = { ...(b.dayStats || {}) };
@@ -203,6 +209,17 @@ export function StoreProvider({ children }) {
         });
       },
       finishBlitz(correct) { up(st => { addXp(st, correct * 2); return bump(st, "b"); }); },
+      // Begriffs-Dojo: lvl 2 = ohne Hilfe getippt, 1 = mit Tipp, 0 = aufgelöst
+      dojo(termId, lvl) {
+        up(st => {
+          const t = { seen: 0, typedOk: 0, fails: 0, ...(st.terms?.[termId] || {}) };
+          t.seen++;
+          if (lvl === 2) t.typedOk++;
+          if (lvl === 0) t.fails++;
+          st.terms = { ...st.terms, [termId]: t };
+          return addXp(st, lvl === 2 ? 4 : lvl === 1 ? 2 : 1);
+        });
+      },
       finishProbe(pts, max) {
         up(st => {
           const pct = max ? pts / max : 0;

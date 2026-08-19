@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SpeakButton from "../lib/SpeakButton.jsx";
 import * as tts from "../lib/tts.js";
+import { findEsel } from "../lib/esel.js";
 import { useStore } from "../lib/store.jsx";
 import { REF } from "../data/ref.js";
 import { FORMAT, PLAN } from "../data/meta.js";
@@ -43,7 +44,7 @@ function Ref() {
                     <span>{b[0]}</span>
                     <SpeakButton id={"ref-" + v.id + "-" + b[0]} text={b[0] + ". " + b[1]} />
                   </b>
-                  <span>{b[1]}</span>
+                  <span>{b[1]}{(() => { const e = findEsel(b[0]); return e ? <em style={{ display: "block", marginTop: 4, fontSize: 12, color: "var(--purple)", fontStyle: "normal" }}>🧠 {e.esel}</em> : null; })()}</span>
                 </div>))}</div>
             </div>
             <div className="blk"><h4>Argumentkarte</h4>

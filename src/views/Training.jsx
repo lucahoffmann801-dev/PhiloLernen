@@ -12,7 +12,7 @@ WCOLOR.wx = "#8f5cc9";
 const MODES = [["due", "Fällig"], ["mixed", "Gemischt"], ["inbox", "Postfach"], ["x", "Verbindungen"]];
 const shuffle = a => [...a].sort(() => Math.random() - 0.5);
 
-export default function Training({ openBlitz, preset, onPresetUsed }) {
+export default function Training({ openBlitz, openDojo, preset, onPresetUsed }) {
   const { s, d, grade } = useStore();
   const [mode, setMode] = useState(preset ? "preset" : "due");
   const [wf, setWf] = useState(null);
@@ -80,6 +80,8 @@ export default function Training({ openBlitz, preset, onPresetUsed }) {
     <div className="view wrap">
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <h2 style={{ flex: 1 }}>{mode === "preset" ? "☀️ Warmstart" : "Training"}</h2>
+        <button className="chip" style={{ background: "#f6f0fc", borderColor: "#ddc7f2", color: "var(--purple)", fontWeight: 800 }}
+          onClick={openDojo}>🧠 Dojo</button>
         <button className="chip" style={{ background: "#fdf3e2", borderColor: "#f3dcb2", color: "#b57708", fontWeight: 800 }}
           onClick={openBlitz}>⚡ Blitzrunde</button>
       </div>

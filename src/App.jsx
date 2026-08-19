@@ -10,6 +10,7 @@ import More from "./views/More.jsx";
 import Player from "./views/Player.jsx";
 import Blitz from "./views/Blitz.jsx";
 import Exam from "./views/Exam.jsx";
+import Dojo from "./views/Dojo.jsx";
 import { fxLevel } from "./lib/fx.js";
 import { initBackground as ttsInit } from "./lib/tts.js";
 import FocusSheet from "./lib/FocusSheet.jsx";
@@ -29,6 +30,7 @@ export default function App() {
   const [session, setSession] = useState(null);
   const [blitz, setBlitz] = useState(false);
   const [exam, setExam] = useState(false);
+  const [dojoOpen, setDojoOpen] = useState(false);
   const [trainPreset, setTrainPreset] = useState(null);
   const [toastNode, toast] = useToast();
   const [, tick] = useState(0);
@@ -95,17 +97,18 @@ export default function App() {
       </header>
 
       {view === "home" && <Home openPlayer={setSession} openBlitz={() => setBlitz(true)}
-        openExam={() => setExam(true)} goto={setView} openTimer={() => setTimerOpen(true)}
+        openExam={() => setExam(true)} openDojo={() => setDojoOpen(true)} goto={setView} openTimer={() => setTimerOpen(true)}
         startWarmstart={() => { setTrainPreset({ ids: d.warmstart }); setView("training"); }} />}
       {view === "path" && <Path openPlayer={setSession} />}
       {view === "training" && <Training key={trainPreset ? "warm" : "std"} openBlitz={() => setBlitz(true)}
-        preset={trainPreset} onPresetUsed={() => setTrainPreset(null)} />}
+        openDojo={() => setDojoOpen(true)} preset={trainPreset} onPresetUsed={() => setTrainPreset(null)} />}
       {view === "threads" && <Threads />}
       {view === "more" && <More toast={toast} />}
 
       {session && <Player session={session} onClose={() => setSession(null)} onOpenFocus={() => setFocusOpen(true)} />}
       {blitz && <Blitz onClose={() => setBlitz(false)} />}
       {exam && <Exam onClose={() => setExam(false)} />}
+      {dojoOpen && <Dojo onClose={() => setDojoOpen(false)} />}
       {focusOpen && <FocusSheet onClose={() => setFocusOpen(false)} />}
 
       {timerOpen && (
@@ -151,7 +154,7 @@ export default function App() {
         </>
       )}
 
-      {levelUp && !session && !blitz && !exam && (
+      {levelUp && !session && !blitz && !exam && !dojoOpen && (
         <div className="levelup" onClick={() => setLevelUp(null)}>
           <div className="box">
             <div className="big">🎓</div>
@@ -167,7 +170,7 @@ export default function App() {
         <div className="row">
           {NAV.map(([id, label, path]) => (
             <button key={id} className={view === id ? "on" : ""}
-              onClick={() => { setSession(null); setBlitz(false); setExam(false); if (id !== "training") setTrainPreset(null); setView(id); }}>
+              onClick={() => { setSession(null); setBlitz(false); setExam(false); setDojoOpen(false); if (id !== "training") setTrainPreset(null); setView(id); }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
                 strokeLinecap="round" strokeLinejoin="round"><path d={path} /></svg>
               {label}

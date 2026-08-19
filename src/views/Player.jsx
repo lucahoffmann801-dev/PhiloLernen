@@ -5,6 +5,7 @@ import Question from "../lib/Question.jsx";
 import { QUESTIONS } from "../data/questions.js";
 import { fxCorrect, fxWrong } from "../lib/fx.js";
 import SpeakButton from "../lib/SpeakButton.jsx";
+import { findEsel } from "../lib/esel.js";
 import { focusState, onFocusChange } from "../lib/focus.js";
 
 const shuffle = a => [...a].sort(() => Math.random() - 0.5);
@@ -145,6 +146,7 @@ function FocusMini({ onOpen }) {
 
 function ConceptCard({ c, world, wname }) {
   const speakText = `${c.term}. ${c.klar} ${c.bsp ? "Stell dir vor: " + c.bsp : ""}`;
+  const esel = findEsel(c.term);
   return (
     <div className="ccard" key={c.term}>
       <div className="ctag" style={{ color: world.color }}>
@@ -154,6 +156,7 @@ function ConceptCard({ c, world, wname }) {
       <h1>{c.term}</h1>
       <p className="klar">{c.klar}</p>
       {c.bsp && <div className="cbsp"><div className="h">Stell dir vor</div><p>{c.bsp}</p></div>}
+      {esel && <div className="eselbox"><div className="h">🧠 Eselsbrücke</div><p>{esel.esel}{esel.wort ? " (" + esel.wort + ")" : ""}</p></div>}
       {c.merk && <div className="cmerk"><div className="h">Merk dir</div><p>{c.merk}</p></div>}
       {c.pruef && <div className="cpruef"><div className="h">In Prüfungssprache</div><p>{c.pruef}</p></div>}
     </div>

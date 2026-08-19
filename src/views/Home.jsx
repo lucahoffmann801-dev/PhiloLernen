@@ -3,6 +3,7 @@ import { useStore, QUESTS, todayKey } from "../lib/store.jsx";
 import { Ring } from "../lib/ui.jsx";
 import { LEVELS, PLAN } from "../data/meta.js";
 import { WORLDS } from "../data/content.js";
+import { TERMS } from "../data/begriffe.js";
 
 const OWL_TIPS = [
   "Kleine Schritte zählen doppelt. Eine Lektion reicht, um den Tag zu gewinnen.",
@@ -21,7 +22,7 @@ function owlState({ d, s, frozenOnLoad }) {
   return ["🦉", OWL_TIPS[day % OWL_TIPS.length]];
 }
 
-export default function Home({ openPlayer, openBlitz, openExam, goto, openTimer, startWarmstart }) {
+export default function Home({ openPlayer, openBlitz, openExam, openDojo, goto, openTimer, startWarmstart }) {
   const { s, d, toggleCheck, frozenOnLoad } = useStore();
   const next = d.next;
   const lvl = LEVELS[d.level];
@@ -93,6 +94,8 @@ export default function Home({ openPlayer, openBlitz, openExam, goto, openTimer,
           );
         })}
       </div>
+
+      <DojoCard s={s} openDojo={openDojo} />
 
       <div className="actionrow">
         <button className="action" onClick={openBlitz}>
@@ -179,6 +182,21 @@ export default function Home({ openPlayer, openBlitz, openExam, goto, openTimer,
         </p>
       </div>
     </div>
+  );
+}
+
+function DojoCard({ s, openDojo }) {
+  const mastered = TERMS.filter(t => (s.terms?.[t.id]?.typedOk ?? 0) >= 2).length;
+  return (
+    <button className="dojocard" onClick={openDojo}>
+      <span className="em">🧠</span>
+      <span style={{ flex: 1, minWidth: 0 }}>
+        <b>Begriffs-Dojo</b>
+        <span>Eselsbrücken ankern, dann selbst tippen · {mastered}/{TERMS.length} gemeistert</span>
+        <span className="pbar"><i style={{ width: (mastered / TERMS.length * 100) + "%", background: "#fff" }} /></span>
+      </span>
+      <span style={{ fontSize: 18 }}>→</span>
+    </button>
   );
 }
 

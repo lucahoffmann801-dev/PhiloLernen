@@ -5,6 +5,7 @@ import { QUESTIONS } from "../data/questions.js";
 import { WORLDS } from "../data/content.js";
 import { PHILS } from "../data/ref.js";
 import { fxCorrect, fxWrong } from "../lib/fx.js";
+import { findEsel } from "../lib/esel.js";
 
 const shuffle = a => [...a].sort(() => Math.random() - 0.5);
 const DURATION = 90; // Sekunden
@@ -154,6 +155,7 @@ export default function Blitz({ onClose }) {
               {picked && !picked.ok && (
                 <div className="reveal bad">
                   <div className="verdict" style={{ color: "var(--no)" }}>Richtig wäre: {item.name}</div>
+                  {item.kind === "def" && (() => { const e = findEsel(item.name); return e ? <p className="small">🧠 {e.esel}</p> : null; })()}
                   <div className="sr3" style={{ gridTemplateColumns: "1fr" }}>
                     <button onClick={() => next()}>Weiter</button>
                   </div>
