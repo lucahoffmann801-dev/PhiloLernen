@@ -152,7 +152,7 @@ function TtsStatus() {
 }
 
 function Sync({ toast }) {
-  const { s, setSyncCode, genAndSetCode, reset, syncState, setSetting } = useStore();
+  const { s, setSyncCode, genAndSetCode, reset, syncState, lastSync, setSetting } = useStore();
   const [val, setVal] = useState(s.syncCode ?? "");
   return (
     <>
@@ -179,9 +179,16 @@ function Sync({ toast }) {
         ))}
       </div>
       <h3 style={{ fontSize: 17, margin: "6px 0 2px" }}>Geräte-Sync</h3>
-      <p className="sub">Ein Sync-Code verbindet Laptop und Handy: gleicher Code, gleicher Fortschritt. Ohne Code bleibt alles nur auf diesem Gerät gespeichert.</p>
+      <p className="sub">Der Sync läuft automatisch: Alle deine Geräte teilen denselben Stand, sobald sie online sind. Du musst nichts einrichten.</p>
       <div className="card" style={{ marginBottom: 12 }}>
-        <h3 style={{ fontSize: 15 }}>Dein Sync-Code</h3>
+        <div className="ttsstatus" style={{ marginTop: 0, marginBottom: 12 }}>
+          <span className="dot" style={{ background: syncState === "ok" ? "var(--ok)" : syncState === "lade" ? "var(--warn)" : "var(--no)" }} />
+          <span>{syncState === "ok"
+            ? "Verbunden" + (lastSync ? " · zuletzt gesichert " + new Date(lastSync).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) + " Uhr" : "")
+            : syncState === "lade" ? "Synchronisiert …"
+            : "Gerade keine Verbindung. Alles ist lokal gesichert und wird nachgereicht, sobald du online bist."}</span>
+        </div>
+        <h3 style={{ fontSize: 15 }}>Sync-Code (für alle Geräte gleich)</h3>
         <div className="syncbox">
           <input value={val} onChange={e => setVal(e.target.value)} placeholder="z. B. luca-k3m9x2p4w7" />
           <button className="btn sec" style={{ width: "auto", padding: "10px 16px" }}
@@ -189,14 +196,8 @@ function Sync({ toast }) {
             Verbinden
           </button>
         </div>
-        {!s.syncCode && (
-          <button className="btn" style={{ marginTop: 10 }}
-            onClick={() => { const c = genAndSetCode(); setVal(c); toast("Code erzeugt und aktiviert."); }}>
-            Neuen Code erzeugen
-          </button>
-        )}
         <p className="small muted" style={{ marginTop: 10 }}>
-          Status: {s.syncCode ? (syncState === "ok" ? "verbunden ✓" : syncState === "lade" ? "lädt …" : syncState === "fehler" ? "Verbindungsfehler, lokal gespeichert" : "aktiv") : "aus"}
+          Ändern musst du ihn nur, wenn du einen privateren Code willst: dann denselben neuen Code auf jedem Gerät eintragen.
         </p>
       </div>
       <div className="card">

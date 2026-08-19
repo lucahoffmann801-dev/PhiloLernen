@@ -15,6 +15,8 @@ const todayTs = () => { const d = new Date(); return new Date(d.getFullYear(), d
 const BOX = [0, 1, 1, 2, 3];
 const QMAP = Object.fromEntries(QUESTIONS.map(q => [q.id, q]));
 export const FREEZE_MAX = 2;
+// Persönliche App: alle Geräte syncen ab Werk unter diesem Code (änderbar in den Einstellungen).
+export const DEFAULT_SYNC_CODE = "luca-klausur-vk27m4";
 
 export const QUESTS = [
   { id: "l", emoji: "📖", label: "1 Lektion abschließen", target: 1, xp: 10 },
@@ -36,9 +38,11 @@ function freshState() {
 }
 
 function loadLocal() {
+  let st = freshState();
   try { const r = localStorage.getItem(KEY); if (r) { const p = JSON.parse(r);
-    return { ...freshState(), ...p, settings: { ...freshState().settings, ...(p.settings || {}) } }; } } catch {}
-  return freshState();
+    st = { ...st, ...p, settings: { ...st.settings, ...(p.settings || {}) } }; } } catch {}
+  if (!st.syncCode) st.syncCode = DEFAULT_SYNC_CODE; // Sync ist immer an
+  return st;
 }
 
 function genCode() {
@@ -122,14 +126,35 @@ export function StoreProvider({ children }) {
 
   useEffect(() => { setFx(s.settings); }, [s.settings]);
 
-  useEffect(() => {
-    const code = s.syncCode;
-    if (!code) return;
+  const [lastSync, setLastSync] = useState(null);
+  const pulling = useRef(false);
+
+  async function pullAndMerge() {
+    const code = sRef.current.syncCode;
+    if (!code || pulling.current) return;
+    pulling.current = true;
     setSyncState("lade");
-    pullProgress(code).then(remote => {
-      if (remote) setS(cur => ({ ...merge(cur, remote), syncCode: code }));
-      setSyncState("ok");
-    });
+    const remote = await pullProgress(code);
+    if (remote) setS(cur => ({ ...merge(cur, remote), syncCode: cur.syncCode }));
+    setSyncState(remote === null ? "fehler" : "ok");
+    if (remote !== null) setLastSync(Date.now());
+    pulling.current = false;
+  }
+
+  // Beim Start UND jedes Mal, wenn die App wieder sichtbar wird (Gerätewechsel!).
+  useEffect(() => {
+    pullAndMerge();
+    const onVis = () => {
+      if (document.visibilityState === "visible") pullAndMerge();
+      else if (sRef.current.syncCode) {
+        // App wird verlassen: sofort sichern, nicht auf den Debounce warten.
+        clearTimeout(pushTimer.current);
+        pushProgress(sRef.current.syncCode, sRef.current);
+      }
+    };
+    document.addEventListener("visibilitychange", onVis);
+    window.addEventListener("pagehide", onVis);
+    return () => { document.removeEventListener("visibilitychange", onVis); window.removeEventListener("pagehide", onVis); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -140,7 +165,8 @@ export function StoreProvider({ children }) {
     pushTimer.current = setTimeout(async () => {
       const ok = await pushProgress(sRef.current.syncCode, sRef.current);
       setSyncState(ok ? "ok" : "fehler");
-    }, 1500);
+      if (ok) setLastSync(Date.now());
+    }, 800);
     return () => clearTimeout(pushTimer.current);
   }, [s]);
 
@@ -231,10 +257,10 @@ export function StoreProvider({ children }) {
       toggleCheck(k) { up(st => { st.checks = { ...st.checks, [k]: !st.checks[k] }; return st; }); },
       setSetting(k, v) { up(st => { st.settings = { ...st.settings, [k]: v }; return st; }); },
       setSyncCode(code) {
-        const c = (code ?? "").trim() || null;
+        const c = (code ?? "").trim() || DEFAULT_SYNC_CODE;
         setS(cur => ({ ...cur, syncCode: c, stamp: (cur.stamp || 0) + 1 }));
-        if (c) { setSyncState("lade"); pullProgress(c).then(r => { if (r) setS(cur => ({ ...merge(cur, r), syncCode: c })); setSyncState("ok"); }); }
-        else setSyncState("aus");
+        setSyncState("lade");
+        pullProgress(c).then(r => { if (r) setS(cur => ({ ...merge(cur, r), syncCode: c })); setSyncState(r === null ? "fehler" : "ok"); });
       },
       genAndSetCode() { const c = genCode(); api.setSyncCode(c); return c; },
       reset() { setS({ ...freshState(), syncCode: sRef.current.syncCode }); },
@@ -278,5 +304,5 @@ export function StoreProvider({ children }) {
       todayXp, todayStats, dailyGoal: DAILY_GOAL, globalMastery, warmstart, freezesLeft, qmap: QMAP };
   }, [s]);
 
-  return <Ctx.Provider value={{ s, ...api, d: derived, syncState, frozenOnLoad: init.frozen }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ s, ...api, d: derived, syncState, lastSync, frozenOnLoad: init.frozen }}>{children}</Ctx.Provider>;
 }
