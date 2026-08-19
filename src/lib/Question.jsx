@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { fxCorrect, fxWrong } from "./fx.js";
+import SpeakButton from "./SpeakButton.jsx";
 
 // Eine Frage im Klausurformat mit Sicherheits-Check (Hypercorrection).
 // onDone(grade, conf) — grade: 0/1/2, conf: 0 geraten / 1 unsicher / 2 sicher.
@@ -70,7 +71,9 @@ export default function Question({ q, worldName, color, onDone, simple, pretest 
           {ahaMoment && <p className="small" style={{ marginBottom: 8 }}>
             Du warst dir sicher und lagst daneben. Genau diese Fehler merkt man sich nachweislich am besten. Lies die Begründung zweimal, die Karte kommt gleich nochmal.
           </p>}
-          <div className="lbl">Musterbegründung</div>
+          <div className="lbl" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            Musterbegründung <SpeakButton id={"b-" + q.id} text={q.b} />
+          </div>
           <p>{q.b}</p>
           {text.trim() && (<><div className="lbl">Deine Antwort</div><p className="muted">{text}</p></>)}
           {pretest ? (

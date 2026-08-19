@@ -11,6 +11,9 @@ import Player from "./views/Player.jsx";
 import Blitz from "./views/Blitz.jsx";
 import Exam from "./views/Exam.jsx";
 import { fxLevel } from "./lib/fx.js";
+import { initBackground as ttsInit } from "./lib/tts.js";
+import FocusSheet from "./lib/FocusSheet.jsx";
+import { focusState, onFocusChange } from "./lib/focus.js";
 
 const NAV = [
   ["home", "Heute", "M12 3l9 8h-3v9h-5v-6h-2v6H6v-9H3z"],
@@ -30,6 +33,12 @@ export default function App() {
   const [toastNode, toast] = useToast();
   const [, tick] = useState(0);
   useEffect(() => { const t = setInterval(() => tick(x => x + 1), 30000); return () => clearInterval(t); }, []);
+
+  // Bessere Vorlesestimme still im Hintergrund vorbereiten (kein Blocker, kein Modal).
+  useEffect(() => { const t = setTimeout(ttsInit, 3000); return () => clearTimeout(t); }, []);
+  const [focusOpen, setFocusOpen] = useState(false);
+  const [focusOn, setFocusOn] = useState(false);
+  useEffect(() => onFocusChange(id => setFocusOn(id !== "off")), []);
 
   // Level-Up-Overlay
   const [levelUp, setLevelUp] = useState(null);
@@ -66,6 +75,10 @@ export default function App() {
         <div className="wrap">
           <div className="brand">PhiloLernen<small>Angewandte Ethik</small></div>
           <div className="statbar">
+            <button className={"speakbtn" + (focusOn ? " playing" : "")} style={{ width: 30, height: 30 }}
+              aria-label="Fokus-Sound" onClick={() => setFocusOpen(true)}>
+              {focusOn ? "🎵" : "🎧"}
+            </button>
             {tLeft !== null && (
               <button className="timerchip" style={tPause ? { background: "var(--ok)" } : {}}
                 onClick={() => setTimerOpen(true)}>
@@ -90,9 +103,10 @@ export default function App() {
       {view === "threads" && <Threads />}
       {view === "more" && <More toast={toast} />}
 
-      {session && <Player session={session} onClose={() => setSession(null)} />}
+      {session && <Player session={session} onClose={() => setSession(null)} onOpenFocus={() => setFocusOpen(true)} />}
       {blitz && <Blitz onClose={() => setBlitz(false)} />}
       {exam && <Exam onClose={() => setExam(false)} />}
+      {focusOpen && <FocusSheet onClose={() => setFocusOpen(false)} />}
 
       {timerOpen && (
         <>

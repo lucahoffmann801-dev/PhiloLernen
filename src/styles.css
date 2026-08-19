@@ -375,3 +375,34 @@ h2{font-size:23px;font-weight:800;letter-spacing:-.5px}
 .wbreak{display:grid;gap:7px;margin-top:14px;text-align:left}
 .wbreak .row{display:grid;grid-template-columns:80px 1fr 44px;gap:9px;align-items:center;font-size:12px}
 .wbreak .row .pbar{height:7px}
+
+/* ---------- v2.3: Audio (Vorlesen + Fokus-Sound) ---------- */
+.speakbtn{width:34px;height:34px;flex:none;border-radius:99px;display:inline-grid;place-items:center;
+  background:var(--bg3);border:1.5px solid var(--line);color:var(--tx2);transition:.15s}
+.speakbtn:active{transform:scale(.92)}
+.speakbtn.playing{background:var(--acc);border-color:var(--acc);color:#fff}
+.speakbtn.dark{background:rgba(255,255,255,.18);border-color:transparent;color:#fff}
+.speakbtn .dots{display:inline-flex;gap:3px}
+.speakbtn .dots i{width:4px;height:4px;border-radius:99px;background:currentColor;
+  animation:dotpulse 1s infinite}
+.speakbtn .dots i:nth-child(2){animation-delay:.15s}
+.speakbtn .dots i:nth-child(3){animation-delay:.3s}
+@keyframes dotpulse{0%,100%{opacity:.25}50%{opacity:1}}
+.ratechips{display:flex;gap:8px}
+.ratechips button{padding:7px 14px;border-radius:11px;font-size:13px;font-weight:800;
+  background:var(--bg3);border:1.5px solid var(--line);color:var(--tx2)}
+.ratechips button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.ttsstatus{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--tx2);margin-top:10px}
+.ttsstatus .dot{width:8px;height:8px;border-radius:99px;flex:none}
+.focusopt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  padding:12px 13px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg2);
+  font-weight:700;font-size:14px;margin-bottom:8px;transition:.13s}
+.focusopt:active{transform:scale(.98)}
+.focusopt.on{border-color:var(--mint);background:#eaf7f4}
+.focusopt .fem{font-size:18px;flex:none}
+.focusopt small{display:block;font-weight:500;font-size:11.5px;color:var(--tx3)}
+.focusopt .check{margin-left:auto;color:var(--mint);font-weight:800}
+.volrow{display:flex;align-items:center;gap:11px;margin-top:14px}
+.volrow input[type=range]{flex:1;accent-color:var(--mint);height:28px}
+.hintbox{background:var(--bg3);border-radius:12px;padding:10px 13px;font-size:12.5px;
+  color:var(--tx2);margin-bottom:12px;line-height:1.5}

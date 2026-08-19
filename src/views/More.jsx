@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import SpeakButton from "../lib/SpeakButton.jsx";
+import * as tts from "../lib/tts.js";
 import { useStore } from "../lib/store.jsx";
 import { REF } from "../data/ref.js";
 import { FORMAT, PLAN } from "../data/meta.js";
@@ -36,7 +38,13 @@ function Ref() {
           <div className="body">
             <div className="blk"><h4>Zentrale Begriffe</h4>
               <div className="kv">{v.begriffe.map(b => (
-                <div className="row" key={b[0]}><b>{b[0]}</b><span>{b[1]}</span></div>))}</div>
+                <div className="row" key={b[0]}>
+                  <b style={{ display: "flex", alignItems: "flex-start", gap: 8, justifyContent: "space-between" }}>
+                    <span>{b[0]}</span>
+                    <SpeakButton id={"ref-" + v.id + "-" + b[0]} text={b[0] + ". " + b[1]} />
+                  </b>
+                  <span>{b[1]}</span>
+                </div>))}</div>
             </div>
             <div className="blk"><h4>Argumentkarte</h4>
               <div className="argmap">
@@ -127,12 +135,38 @@ function Format() {
   );
 }
 
+function TtsStatus() {
+  const [snap, setSnap] = useState(tts.snapshot);
+  useEffect(() => tts.subscribe(setSnap), []);
+  const [dot, text] =
+    snap.phase === "bereit" ? ["var(--ok)", "Hochwertige Vorlesestimme aktiv (Thorsten, läuft komplett auf deinem Gerät)"] :
+    snap.phase === "lade" ? ["var(--warn)", `Bessere Vorlesestimme wird vorbereitet · ${Math.round(snap.progress * 100)} % — solange liest die Systemstimme vor`] :
+    ["var(--tx3)", "Systemstimme aktiv. Die bessere Stimme wird beim nächsten Start erneut vorbereitet."];
+  return (
+    <div className="ttsstatus">
+      <span className="dot" style={{ background: dot }} />
+      <span>{text}</span>
+    </div>
+  );
+}
+
 function Sync({ toast }) {
   const { s, setSyncCode, genAndSetCode, reset, syncState, setSetting } = useStore();
   const [val, setVal] = useState(s.syncCode ?? "");
   return (
     <>
       <h2>Einstellungen</h2>
+      <div className="card" style={{ marginBottom: 12 }}>
+        <h3 style={{ fontSize: 15, marginBottom: 8 }}>Vorlesen</h3>
+        <p className="small muted" style={{ marginBottom: 10 }}>Tempo der Vorlesestimme</p>
+        <div className="ratechips">
+          {[[0.8, "0,8×"], [1, "1,0×"], [1.2, "1,2×"]].map(([r, label]) => (
+            <button key={r} className={(s.settings?.ttsRate ?? 1) === r ? "on" : ""}
+              onClick={() => setSetting("ttsRate", r)}>{label}</button>
+          ))}
+        </div>
+        <TtsStatus />
+      </div>
       <div className="card" style={{ marginBottom: 12 }}>
         <h3 style={{ fontSize: 15, marginBottom: 8 }}>Feedback</h3>
         {[["sound", "🔊 Sounds bei richtig/falsch"], ["haptics", "📳 Vibration (am Handy)"]].map(([k, label]) => (

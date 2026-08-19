@@ -1,12 +1,13 @@
-// Mikro-Feedback: kurze Töne (WebAudio, keine Assets) + Haptik. Abschaltbar.
+// Mikro-Feedback (richtig/falsch/Level) über die gemeinsame Audio-Ebene.
+import { getCtx, nodes } from "./audio.js";
+
 let cfg = { sound: true, haptics: true };
 export const setFx = c => { cfg = { ...cfg, ...c }; };
 
-let ctx = null;
 function beep(freqs, dur = 0.09, type = "sine", gain = 0.12) {
   if (!cfg.sound) return;
   try {
-    ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = getCtx();
     if (ctx.state === "suspended") ctx.resume();
     freqs.forEach((f, i) => {
       const o = ctx.createOscillator(), g = ctx.createGain();
@@ -14,7 +15,7 @@ function beep(freqs, dur = 0.09, type = "sine", gain = 0.12) {
       g.gain.setValueAtTime(0, ctx.currentTime + i * dur);
       g.gain.linearRampToValueAtTime(gain, ctx.currentTime + i * dur + 0.01);
       g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (i + 1) * dur + 0.05);
-      o.connect(g); g.connect(ctx.destination);
+      o.connect(g); g.connect(nodes.fx);
       o.start(ctx.currentTime + i * dur); o.stop(ctx.currentTime + (i + 1) * dur + 0.06);
     });
   } catch {}

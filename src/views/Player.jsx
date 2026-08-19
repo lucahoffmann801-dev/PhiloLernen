@@ -1,9 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../lib/store.jsx";
 import { Confetti } from "../lib/ui.jsx";
 import Question from "../lib/Question.jsx";
 import { QUESTIONS } from "../data/questions.js";
 import { fxCorrect, fxWrong } from "../lib/fx.js";
+import SpeakButton from "../lib/SpeakButton.jsx";
+import { focusState, onFocusChange } from "../lib/focus.js";
 
 const shuffle = a => [...a].sort(() => Math.random() - 0.5);
 const firstSentence = t => {
@@ -28,7 +30,7 @@ function makeMc(world, lesson) {
   });
 }
 
-export default function Player({ session, onClose }) {
+export default function Player({ session, onClose, onOpenFocus }) {
   const { world, lesson, boss } = session;
   const store = useStore();
 
@@ -92,6 +94,7 @@ export default function Player({ session, onClose }) {
       {combo >= 2 && !done && <div className="combo" key={combo}>{combo}er-Serie {combo >= 4 ? "🔥" : "✨"}</div>}
       <div className="ptop">
         <button className="x" onClick={onClose} aria-label="Schließen">✕</button>
+        <FocusMini onOpen={onOpenFocus} />
         <div className="pbar"><i style={{
           width: ((done ? total : i) / total * 100) + "%",
           background: boss ? "var(--gold)" : world.color }} /></div>
@@ -130,11 +133,23 @@ export default function Player({ session, onClose }) {
   );
 }
 
+function FocusMini({ onOpen }) {
+  const [on, setOn] = useState(focusState() !== "off");
+  useEffect(() => onFocusChange(id => setOn(id !== "off")), []);
+  if (!onOpen) return null;
+  return (
+    <button className={"speakbtn" + (on ? " playing" : "")} style={{ width: 30, height: 30 }}
+      aria-label="Fokus-Sound" onClick={onOpen}>{on ? "🎵" : "🎧"}</button>
+  );
+}
+
 function ConceptCard({ c, world, wname }) {
+  const speakText = `${c.term}. ${c.klar} ${c.bsp ? "Stell dir vor: " + c.bsp : ""}`;
   return (
     <div className="ccard" key={c.term}>
       <div className="ctag" style={{ color: world.color }}>
         <span>{world.emoji}</span><span>{wname}</span>
+        <span style={{ marginLeft: "auto" }}><SpeakButton id={"card-" + c.term} text={speakText} /></span>
       </div>
       <h1>{c.term}</h1>
       <p className="klar">{c.klar}</p>

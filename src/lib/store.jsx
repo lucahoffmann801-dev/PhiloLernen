@@ -30,7 +30,7 @@ function freshState() {
     streak: 0, lastStreakDay: null, bestStreak: 0,
     freezesUsed: 0,          // sanfte Streak: 2 Schoner für Lücken-Tage
     probeBest: null,         // bestes Generalproben-Ergebnis {pct, pts, max, date}
-    settings: { sound: true, haptics: true },
+    settings: { sound: true, haptics: true, ttsRate: 1, focusChoice: "off", focusVol: 0.5, focusHintSeen: false },
     syncCode: null, stamp: 0,
   };
 }
