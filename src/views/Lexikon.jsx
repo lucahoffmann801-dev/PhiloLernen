@@ -4,7 +4,7 @@ import { PHILS } from "../data/ref.js";
 import { WORLDS } from "../data/content.js";
 import { norm } from "../lib/esel.js";
 import SpeakButton from "../lib/SpeakButton.jsx";
-import { COMPARES } from "../data/vergleiche.js";
+import { COMPARES, CASES } from "../data/vergleiche.js";
 
 const WMAP = Object.fromEntries(WORLDS.map(w => [w.id, w]));
 const wname = id => WMAP[id] ? (WMAP[id].nr === "GV" ? "Gastvortrag" : "Kapitel " + WMAP[id].nr) : "";
@@ -149,12 +149,44 @@ function Vergleiche() {
                   ))}
                 </div>
               ))}
+              <CaseLens c={c} />
               {c.merke && <div className="merke"><b>Merke</b>{c.merke}</div>}
             </div>
           </div>
         );
       })}
     </>
+  );
+}
+
+// Ein Fall, alle Blickwinkel: ein wählbares Beispiel, durch jede Position
+// betrachtet. Immer nur EIN Fall sichtbar — Chips schalten um, nichts erschlägt.
+function CaseLens({ c }) {
+  const cases = CASES[c.id];
+  const [sel, setSel] = useState(0);
+  if (!cases || !cases.length) return null;
+  const f = cases[Math.min(sel, cases.length - 1)];
+  return (
+    <div className="fallbox">
+      <h4><span aria-hidden="true">🔍</span> Ein Fall, alle Blickwinkel</h4>
+      <div className="fallchips" role="tablist" aria-label="Fallbeispiel wählen">
+        {cases.map((k, i) => (
+          <button key={k.name} role="tab" aria-selected={i === sel}
+            className={"fallchip" + (i === sel ? " on" : "")}
+            onClick={() => setSel(i)}>{k.name}</button>
+        ))}
+      </div>
+      {f.desc && <p className="falldesc">{f.desc}</p>}
+      <div className="fallviews">
+        {f.views.map((v, i) => (
+          <div className="vsrow" key={c.items[i].n}>
+            <span className="vsdot" style={{ background: c.items[i].c }} aria-hidden="true" />
+            <span className="vsname" style={{ color: c.items[i].c }}>{c.items[i].n}</span>
+            <span className="vsval">{v}</span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 

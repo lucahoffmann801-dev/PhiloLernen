@@ -525,3 +525,18 @@ h2{font-size:23px;font-weight:800;letter-spacing:-.5px}
 .vsrow .vsname{font-weight:800;font-size:11.5px;line-height:1.35;padding-top:1px;overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto}
 .vsrow .vsval{color:var(--tx2)}
 @media(max-width:400px){.vsrow{grid-template-columns:10px 100px 1fr}}
+
+/* Ein Fall, alle Blickwinkel: gewählter Fall durch jede Brille */
+.fallbox{margin-top:18px;padding:14px 14px 10px;border-radius:16px;
+  background:linear-gradient(180deg,#fdf8ef,#fbf4e6);border:1.5px solid #f0e3c8}
+.fallbox h4{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:#a8843c;
+  font-weight:800;margin-bottom:10px}
+.fallchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.fallchip{font:inherit;font-size:12px;font-weight:800;padding:7px 12px;border-radius:999px;
+  background:#fff;color:var(--tx2);border:1.5px solid #ead9b8;cursor:pointer;
+  transition:transform .12s,background .12s;-webkit-tap-highlight-color:transparent}
+.fallchip:active{transform:scale(.96)}
+.fallchip.on{background:#a8843c;border-color:#a8843c;color:#fff;box-shadow:0 2px 8px rgba(168,132,60,.28)}
+.falldesc{font-size:13px;line-height:1.55;color:var(--tx1);margin:0 0 6px;
+  padding:9px 11px;border-radius:12px;background:#fff;border:1px dashed #ead9b8}
+.fallviews{margin-top:2px}

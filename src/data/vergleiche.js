@@ -217,3 +217,188 @@ export const COMPARES = [
    "Bei ungleichen Grundraten unvereinbar mit Separation"]}],
  merke:"Das Unmöglichkeitsergebnis: Sind die Grundraten ungleich und der Klassifikator nicht perfekt, gehen Separation und Sufficiency NIE zugleich. Man muss wählen."},
 ];
+
+// ---------------------------------------------------------------------------
+// "Ein Fall, alle Blickwinkel": pro Vergleich 2-3 wählbare Fallbeispiele.
+// Derselbe Fall wird durch jede Position betrachtet (views ist positionsgleich
+// zu items sortiert). Sprachregel: Urteile nur, wo die Folien sie vorgeben;
+// sonst wird die PERSPEKTIVE gezeigt ("würde fragen ...", "aus dieser Sicht ...").
+export const CASES = {
+theorien: [
+ {name:"Trolley: die Weiche", desc:"Ein Wagen rollt auf fünf Menschen zu. Du kannst eine Weiche stellen, dann stirbt einer auf dem Nebengleis.",
+  views:[
+   "Erlaubt (laut Vorlesung): Niemand wird bloß als Mittel benutzt, der eine Tod ist tragische Nebenfolge.",
+   "Geboten (laut Vorlesung): 1 statt 5 — die Nutzenbilanz entscheidet, und sie ist eindeutig.",
+   "Würde fragen: Welche Regel würden rationale Vertragspartner wählen, die selbst auf jedem der Gleise stehen könnten?",
+   "Würde fragen: Könnten alle Betroffenen der Norm „In solchen Fällen wird umgestellt“ im fairen Diskurs zustimmen?",
+   "Fragt nicht nach der Regel, sondern: Was täte hier der phronimos? Geschulte Urteilskraft statt Rechnung."]},
+ {name:"Trolley: der dicke Mann", desc:"Gleiche Bilanz, andere Handlung: Du könntest einen Mann von der Brücke stoßen, sein Körper stoppt den Wagen.",
+  views:[
+   "Verboten (laut Vorlesung): Ein Unschuldiger wird direkt als Mittel instrumentalisiert — der Zweck heiligt die Mittel nicht.",
+   "Geboten (laut Vorlesung): Die Bilanz ist identisch mit Fall 1 — für den Utilitaristen ändert sich nichts.",
+   "Würde fragen: Wer unterschreibt einen Vertrag, nach dem jeder jederzeit geopfert werden darf? Er macht jeden zum möglichen Opfer.",
+   "Würde fragen: Der Geopferte selbst könnte der Norm im Diskurs kaum je zustimmen — und alle Betroffenen müssen es können.",
+   "Würde fragen: Was verrät es über meinen Charakter, einen Menschen mit eigenen Händen in den Tod zu stoßen?"]},
+ {name:"Die Notlüge", desc:"Du lügst, um einer Freundin eine schmerzhafte Wahrheit zu ersparen.",
+  views:[
+   "Nicht verallgemeinerbar: Dürfte jeder so lügen, glaubte niemand mehr Zusagen — die Maxime zerstört sich selbst.",
+   "Erlaubt, wenn die Lüge mehr Glück als Leid stiftet: Allein die Folgenbilanz entscheidet.",
+   "Würde fragen: Unterschreiben rationale Egoisten eine Notlügen-Klausel, obwohl sie dann selbst belogen werden dürften?",
+   "Würde fragen: Könnten auch die BELOGENEN der Norm „Notlügen sind okay“ unter idealen Bedingungen zustimmen?",
+   "Wahrhaftigkeit ist eine Tugend — aber der praktisch Kluge wägt im Einzelfall, statt einer starren Regel zu folgen."]},
+],
+ki: [
+ {name:"Der dicke Mann",
+  views:[
+   "Würde fragen: Kann ich wollen, dass „Unbeteiligte opfern, wenn es mehr rettet“ allgemeines Gesetz wird — und jeder, auch ich, jederzeit Opfer sein darf?",
+   "Durchgefallen (laut Vorlesung): Der Mann wird BLOSS als Mittel benutzt — direkte Instrumentalisierung."]},
+ {name:"Der Handwerker-Auftrag", desc:"Du beauftragst und bezahlst einen Handwerker.",
+  views:[
+   "Würde fragen: Kann ich wollen, dass „Leistung gegen faire Bezahlung kaufen“ allgemeines Gesetz wird? Die Maxime zerstört sich nicht selbst — nichts spricht dagegen.",
+   "Bestanden: Er ist Mittel zum Zweck, aber freiwillig und bezahlt — zugleich als Person geachtet, nicht BLOSS Mittel."]},
+ {name:"Die Notlüge",
+  views:[
+   "Durchgefallen: Die Maxime „Ich lüge, wenn es passt“ zerstört sich als allgemeines Gesetz selbst — niemand glaubte mehr irgendwem.",
+   "Würde fragen: Der Belogene kann der Täuschung nicht zustimmen — er wird als bloßes Mittel für mein Ziel behandelt."]},
+],
+rationierung: [
+ {name:"Ein Organ, zwei Patienten", desc:"Ein Spenderorgan. Patientin A: 30, sehr gute Prognose. Patient B: 78, mäßige Prognose, wartet länger und leidet stärker.",
+  views:[
+   "Patientin A: Bei ihr kauft das Organ die meisten gesunden Lebensjahre (QALYs).",
+   "Losentscheid: Beide haben das gleiche Anrecht — Heilungsaussichten dürfen keine Rolle spielen.",
+   "Patient B: Der schlechter Gestellte, der länger wartet und stärker leidet, hat Vorrang.",
+   "Patient B: Der medizinisch Bedürftigste zuerst, unabhängig von den Erfolgsaussichten.",
+   "Würde zuerst fragen: Ist eine der Erkrankungen selbstverschuldet (z. B. durch Rauchen)? Das flösse in die Verteilung ein."]},
+ {name:"Das letzte Intensivbett", desc:"Grippewelle. Ein Bett, zwei Notfälle: ein junger Patient mit hoher Überlebenschance, eine schwerstkranke Patientin mit geringer.",
+  views:[
+   "Der junge Patient: höhere Erfolgswahrscheinlichkeit, mehr gewonnene Lebenszeit pro Ressource.",
+   "Beide gleichberechtigt: Wenn nichts anderes zählt, entscheidet das Los, nicht die Prognose.",
+   "Die schwerstkranke Patientin: Ihr geht es am schlechtesten, also hat sie Vorrang — auch wenn der Nutzen kleiner ist.",
+   "Die schwerstkranke Patientin: Sie ist die Bedürftigste — genau das zählt hier, sonst nichts.",
+   "Würde fragen, wie es zu den Erkrankungen kam — und stößt dabei auf sein Kernproblem: Kausalität ist kaum nachweisbar."]},
+],
+embryonen: [
+ {name:"Das brennende Labor", desc:"Im Feuer: ein Koffer mit 1.000 Embryonen und ein Stockwerk höher ein Kleinkind. Du kannst nur eines retten.",
+  views:[
+   "Müsste konsequent den Koffer retten — 1.000 unschuldige menschliche Wesen. Dass fast niemand das täte, ist genau der Einwand der Vorlesung gegen diese Theorie.",
+   "Müsste klären, ob 1.000 Träger bloß passiven Potentials ein Kind mit aktualen Fähigkeiten überwiegen — die Vorlesung führt das Experiment allerdings nur als Einwand gegen Theorie I an.",
+   "Ohne Konflikt: Das Kind ist auf dem Weg zur Person mit aktuellen Interessen, die Embryonen haben keine — das Kind wird gerettet."]},
+ {name:"Überzählige IVF-Embryonen", desc:"Nach einer künstlichen Befruchtung bleiben Embryonen übrig. Verwerfen?",
+  views:[
+   "Verboten: Verwerfen wäre das Töten unschuldigen menschlichen Lebens — ab der Verschmelzung.",
+   "Problematisch: Jeder Embryo trägt das Potential zur Person. Konsequent gedacht müsste man aber auch Gameten schützen — der Harris-Einwand.",
+   "Kein Verstoß gegen ein Lebensrecht: Ohne Selbstbewusstsein, zeitliche Identität und Zukunftswünsche gibt es kein aktuelles Lebensinteresse."]},
+ {name:"Der Schlafende", desc:"Ein tief schlafender Mensch hat gerade keine bewussten Interessen. Hat er trotzdem ein Lebensrecht?",
+  views:[
+   "Selbstverständlich: Er ist ein unschuldiges menschliches Wesen — mehr braucht diese Theorie nicht.",
+   "Selbstverständlich: Sein Potential ist unbestritten — er WAR ja schon alles, was er wieder sein wird.",
+   "Die Nagelprobe der Theorie: Singers Antwort lautet AKTIVE Potentialität — seine Fähigkeiten ruhen nur, anders als beim Embryo, der sie erst entwickeln muss."]},
+],
+autonomie: [
+ {name:"Der unwillige Raucher", desc:"Er greift zur Zigarette — und hasst sich dafür, denn er will dieses Verlangen nicht haben.",
+  views:[
+   "Autonom: Der Griff zur Zigarette ist absichtlich, verstanden und von niemandem kontrolliert — mehr verlangt die Handlungsautonomie nicht.",
+   "NICHT autonom: Wunsch 1. Ordnung (rauchen) und Wunsch 2. Ordnung (dieses Wollen nicht wollen) kollidieren — Frankfurts Paradefall."]},
+ {name:"Die Bluttransfusion", desc:"Eine Zeugin Jehovas lehnt aus tiefem Glauben eine lebensrettende Transfusion ab.",
+  views:[
+   "Wirksam: absichtlich, substantiell verstanden, ohne kontrollierende Einflüsse — alle drei Bedingungen erfüllt, die Ablehnung ist zu respektieren.",
+   "Erst recht zu respektieren: Die Entscheidung ist tief in der Persönlichkeit verankert — je stärker eingebettet, desto mehr Gewicht, sogar gegen das Wohlergehen."]},
+ {name:"Die OP-Einwilligung", desc:"Ein Patient unterschreibt nach dem Aufklärungsgespräch die Einwilligung zur Blinddarm-OP.",
+  views:[
+   "Genau ihr Fall: Absicht, substantielles Verstehen, keine Kontrolle — die Einwilligung ist gültig. Vollständiges Verstehen ist nicht nötig.",
+   "Stellt hier keine Zusatzfragen: Ob der Patient insgesamt ein selbstbestimmtes Leben führt, ist für diese eine Handlung nicht gefordert."]},
+],
+"sh-wille": [
+ {name:"Koma ohne Verfügung", desc:"Ein Patient liegt im irreversiblen Koma. Es gibt keine Patientenverfügung, sein Wille ist unbekannt. Die Behandlung wird beendet.",
+  views:[
+   "Liegt NICHT vor: Es gibt keinen geäußerten Sterbewunsch.",
+   "GENAU dieser Fall: urteilsunfähig, Wille unbekannt — das ist nicht-freiwillige Sterbehilfe.",
+   "Liegt NICHT vor: Es gibt keinen bekannten entgegenstehenden Willen."]},
+ {name:"Der wiederholte Wunsch", desc:"Eine aufgeklärte, urteilsfähige Patientin bittet über Wochen immer wieder darum, sterben zu dürfen.",
+  views:[
+   "GENAU dieser Fall: expliziter, aufgeklärter Wille — freiwillige Sterbehilfe.",
+   "Liegt NICHT vor: Die Patientin ist urteilsfähig und ihr Wille bekannt.",
+   "Liegt NICHT vor: Nichts geschieht gegen ihren Willen."]},
+ {name:"Gegen den dokumentierten Willen", desc:"Ein Patient hat schriftlich jede Form von Sterbehilfe abgelehnt. Sie wird dennoch durchgeführt.",
+  views:[
+   "Liegt NICHT vor: Der Wille zeigt in die Gegenrichtung.",
+   "Liegt NICHT vor: Der Wille ist ja bekannt — nur eben ablehnend.",
+   "GENAU dieser Fall: gegen den erklärten Willen — und damit laut Vorlesung immer unethisch."]},
+],
+"sh-handlung": [
+ {name:"Beatmung wird abgeschaltet", desc:"Der Arzt drückt den Knopf, das Gerät stoppt, der Patient stirbt an seiner Grunderkrankung.",
+  views:[
+   "Nein: Es gibt keine gezielte tötende Intervention wie eine Giftspritze.",
+   "JA (rechtlich): Sterbenlassen durch Behandlungsabbruch — obwohl faktisch ein Knopf gedrückt wird. Genau hier sitzt Birnbachers GDH-Grauzone.",
+   "Nein: Es wird kein Mittel mit tödlicher Nebenwirkung gegeben.",
+   "Nein: Der Patient führt nichts selbst aus."]},
+ {name:"Hochdosiertes Morphin", desc:"Gegen unerträgliche Schmerzen wird die Dosis erhöht — mit dem bekannten Risiko, das Leben zu verkürzen.",
+  views:[
+   "Nein: Es fehlt die Tötungsabsicht — beabsichtigt ist die Linderung.",
+   "Nein: Es wird gehandelt, nicht unterlassen.",
+   "JA: Der Lehrbuchfall des Doppelwirkungsprinzips — Linderung gewollt, Lebensverkürzung in Kauf genommen.",
+   "Nein: Die Gabe erfolgt durch das Behandlungsteam."]},
+ {name:"Das Glas auf dem Nachttisch", desc:"Der Arzt stellt das tödliche Medikament bereit. Ob und wann der Patient es trinkt, entscheidet er allein.",
+  views:[
+   "Nein: Die letzte, tödliche Handlung führt nicht der Arzt aus.",
+   "Nein: Der Arzt unterlässt nichts — er handelt sogar, aber nicht tötend.",
+   "Nein: Das Medikament lindert nicht mit tödlicher Nebenwirkung, es IST das Mittel.",
+   "GENAU dieser Fall: Bereitstellen ja, ausführen nein — die Kontrolle bleibt beim Sterbewilligen."]},
+],
+armut: [
+ {name:"100 € nach der Hungersnot", desc:"Ein Spendenaufruf nach einer Hungersnot: Bist du moralisch verpflichtet, 100 € zu geben?",
+  views:[
+   "Ja: Du kannst Schlimmes verhindern, ohne Vergleichbares zu opfern — und Entfernung zählt nicht. Das Teichbeispiel in Geldform.",
+   "Nein: „Ich habe kein moralisches Gebot zu helfen, wenn ich niemandem etwas Falsches getan habe.“ Positive Pflichten sind vertraglich nicht gesichert.",
+   "Seine Theorie adressiert Institutionen und Völker, nicht deine 100 € — global kennt sie ohnehin nur eine Unterstützungspflicht für wohlgeordnete Gesellschaften.",
+   "Ja, aber anders begründet: nicht Großzügigkeit, sondern Wiedergutmachung — die Institutionen, von denen du profitierst, haben die Not mit verursacht."]},
+ {name:"Das Kind im Teich", desc:"Direkt vor dir ertrinkt ein Kind. Retten ruiniert nur deine Schuhe.",
+  views:[
+   "Retten, selbstverständlich — und Singers Pointe: Zwischen diesem Kind und dem fernen Kind besteht moralisch kein Unterschied.",
+   "Würde wohl auch retten wollen — aber sein Vertrag ERZWINGT es nicht: Hilfspflichten bleiben schwach und unbestimmt.",
+   "Kein Fall für seine Theorie: Sie regelt die Grundstruktur von Gesellschaften, nicht die Nothilfe am Teichrand.",
+   "Sein Argument greift hier gar nicht: Du hast das Ertrinken nicht mitverursacht — Pogge zielt auf strukturelles Unrecht, nicht auf Unglücke."]},
+],
+umwelt: [
+ {name:"Das Moor und die Straße", desc:"Ein abgelegenes Moor soll für eine Straße trockengelegt werden. Kaum ein Mensch kennt es; Frösche, Vögel und seltene Pflanzen leben dort.",
+  views:[
+   "Der Eingriff zerstört ein Ökosystem mit Eigenwert — rechtfertigungsbedürftig, auch wenn kein Mensch das Moor je besucht.",
+   "Alle Lebewesen dort zählen — auch die seltenen Pflanzen sind moralisch betroffen, nicht nur die Tiere.",
+   "Die empfindungsfähigen Tiere zählen (Frösche, Vögel) — die Pflanzen haben kein ZNS und damit keine Interessen.",
+   "Zählt nur, was Menschen verlieren: Erholungsraum, Hochwasserschutz, künftiger Nutzen. Ohne das spricht wenig dagegen."]},
+ {name:"Das Antibiotikum", desc:"Eine bakterielle Infektion wird mit Antibiotika behandelt — Milliarden Bakterien sterben.",
+  views:[
+   "Kein Fall für ihn: Es geht um keinen Eingriff in ein Ökosystem.",
+   "Sein Problemfall (laut Vorlesung): Konsequent müssten auch Bakterien moralisch zählen — genau diese Ausdehnung wird als absurd eingewandt.",
+   "Unproblematisch: Bakterien haben kein ZNS, empfinden nichts, haben keine Interessen.",
+   "Unproblematisch: Die Gesundheit des Menschen ist das Einzige, was zählt."]},
+],
+klima: [
+ {name:"Das Restbudget", desc:"Wie verteilt man das verbleibende CO2-Budget zwischen Deutschland und Bangladesch?",
+  views:[
+   "Zuerst das Existenzminimum ALLER sichern — die Kochstelle in Bangladesch ist tabu, der Luxuskonsum nicht.",
+   "Gleiches Budget pro Kopf, heute wie künftig — für Deutschland hieße das: deutlich weniger als bisher.",
+   "Deutschland hat die Atmosphäre historisch übernutzt und muss ausgleichen, um zum Ideal gleicher Nutzung zurückzufinden.",
+   "Die heute in Deutschland Lebenden profitieren vom fossilen Wohlstand — sie zahlen mit, ob sie wollten oder nicht."]},
+ {name:"Der junge Radfahrer", desc:"Ein junger Deutscher lebt bewusst emissionsarm, fährt nur Rad. Muss er trotzdem für Klimaschäden mitzahlen?",
+  views:[
+   "Sein Existenzminimum bleibt ohnehin unangetastet — darüber hinaus ist er nicht geschützt.",
+   "Er bekommt dasselbe Pro-Kopf-Budget wie jeder andere — sein sparsamer Lebensstil verschafft ihm Spielraum darin.",
+   "Als Teil des Verursacherlandes: ja. Genau hier greift die Kritik der Vorlesung — das Prinzip unterscheidet nicht zwischen „Yuppie“ und „Öko“.",
+   "Ja: Er profitiert vom historisch aufgebauten Wohlstand — das Prinzip gilt ausdrücklich auch für unbewusstes Nutznießen."]},
+],
+fairness: [
+ {name:"COMPAS", desc:"Der US-Rückfall-Score, den ProPublica untersuchte.",
+  views:[
+   "Würde die Hautfarbe einfach weglassen — aber Wohnort & Co. tragen sie als Proxy wieder hinein.",
+   "Würde verlangen, dass die Risikoscores über die Gruppen gleich verteilt sind — unabhängig von allem anderen.",
+   "VERLETZT (laut Vorlesung): falsch-positiv 45 % bei Schwarzen gegen 23 % bei Weißen — ungleiche Fehlerraten.",
+   "Weitgehend erfüllt: Die Vorhersagewerte waren zwischen den Gruppen ähnlich — der Score „bedeutete dasselbe“."]},
+ {name:"Der AMS-Score", desc:"Ein Arbeitsamt-Algorithmus schätzt das Langzeitarbeitslosigkeits-Risiko und steuert Förderprogramme.",
+  views:[
+   "Würde das Geschlecht streichen — aber die Erwerbsbiografie trägt es als Proxy wieder hinein.",
+   "Eine der Fairness-Beschränkungen der Fallstudie — fairnessbeschränkte Scores führten dort insgesamt zu GRÖSSEREN Geschlechterlücken bei der Langzeitarbeitslosigkeit.",
+   "Auch dieses Kriterium zählt zu den Fairness-Beschränkungen, die in der Fallstudie insgesamt schlechter abschnitten als der unbeschränkte Score.",
+   "Der unbeschränkte, nach Gruppen kalibrierte Score erfüllte dieses Kriterium — und lieferte die besseren Verteilungsergebnisse."]},
+],
+};
