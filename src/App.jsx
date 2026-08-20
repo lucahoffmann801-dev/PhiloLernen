@@ -12,6 +12,7 @@ import Blitz from "./views/Blitz.jsx";
 import Exam from "./views/Exam.jsx";
 import Dojo from "./views/Dojo.jsx";
 import Listen from "./views/Listen.jsx";
+import Arcade from "./views/Arcade.jsx";
 import { fxLevel } from "./lib/fx.js";
 import { initBackground as ttsInit } from "./lib/tts.js";
 import FocusSheet from "./lib/FocusSheet.jsx";
@@ -33,6 +34,7 @@ export default function App() {
   const [exam, setExam] = useState(false);
   const [dojoOpen, setDojoOpen] = useState(false);
   const [listenWorld, setListenWorld] = useState(null);
+  const [arcadeOpen, setArcadeOpen] = useState(false);
   const [trainPreset, setTrainPreset] = useState(null);
   const [toastNode, toast] = useToast();
   const [, tick] = useState(0);
@@ -99,7 +101,7 @@ export default function App() {
       </header>
 
       {view === "home" && <Home openPlayer={setSession} openBlitz={() => setBlitz(true)}
-        openExam={() => setExam(true)} openDojo={() => setDojoOpen(true)} goto={setView} openTimer={() => setTimerOpen(true)}
+        openExam={() => setExam(true)} openDojo={() => setDojoOpen(true)} openArcade={() => setArcadeOpen(true)} goto={setView} openTimer={() => setTimerOpen(true)}
         startPreset={p => { setTrainPreset(p); setView("training"); }} />}
       {view === "path" && <Path openPlayer={setSession} openListen={setListenWorld} />}
       {view === "training" && <Training key={trainPreset ? "warm" : "std"} openBlitz={() => setBlitz(true)}
@@ -112,6 +114,7 @@ export default function App() {
       {exam && <Exam onClose={() => setExam(false)} />}
       {dojoOpen && <Dojo onClose={() => setDojoOpen(false)} />}
       {listenWorld && <Listen world={listenWorld} onClose={() => setListenWorld(null)} />}
+      {arcadeOpen && <Arcade onClose={() => setArcadeOpen(false)} />}
       {focusOpen && <FocusSheet onClose={() => setFocusOpen(false)} />}
 
       {timerOpen && (
@@ -157,7 +160,7 @@ export default function App() {
         </>
       )}
 
-      {levelUp && !session && !blitz && !exam && !dojoOpen && !listenWorld && (
+      {levelUp && !session && !blitz && !exam && !dojoOpen && !listenWorld && !arcadeOpen && (
         <div className="levelup" onClick={() => setLevelUp(null)}>
           <div className="box">
             <div className="big">🎓</div>
@@ -173,7 +176,7 @@ export default function App() {
         <div className="row">
           {NAV.map(([id, label, path]) => (
             <button key={id} className={view === id ? "on" : ""}
-              onClick={() => { setSession(null); setBlitz(false); setExam(false); setDojoOpen(false); setListenWorld(null); setTrainPreset(null); setView(id); }}>
+              onClick={() => { setSession(null); setBlitz(false); setExam(false); setDojoOpen(false); setListenWorld(null); setArcadeOpen(false); setTrainPreset(null); setView(id); }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
                 strokeLinecap="round" strokeLinejoin="round"><path d={path} /></svg>
               {label}

@@ -24,7 +24,7 @@ function owlState({ d, s, frozenOnLoad }) {
   return ["🦉", OWL_TIPS[day % OWL_TIPS.length]];
 }
 
-export default function Home({ openPlayer, openBlitz, openExam, openDojo, goto, openTimer, startPreset }) {
+export default function Home({ openPlayer, openBlitz, openExam, openDojo, openArcade, goto, openTimer, startPreset }) {
   const { s, d, toggleCheck, frozenOnLoad } = useStore();
   const next = d.next;
   const lvl = LEVELS[d.level];
@@ -108,6 +108,15 @@ export default function Home({ openPlayer, openBlitz, openExam, openDojo, goto, 
       </div>
 
       <DojoCard s={s} openDojo={openDojo} />
+
+      <button className="arcadecard" onClick={openArcade}>
+        <span className="em">🎮</span>
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <b>Arcade</b>
+          <span>Millionär, Boss-Kampf, Lüge-Suche, Memory — spielen ist hier lernen</span>
+        </span>
+        <span style={{ fontSize: 18 }}>→</span>
+      </button>
 
       <div className="actionrow">
         <button className="action" onClick={openBlitz}>

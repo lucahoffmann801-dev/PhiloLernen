@@ -461,3 +461,67 @@ h2{font-size:23px;font-weight:800;letter-spacing:-.5px}
   .noprint{display:none !important}
   .printpage{page-break-after:always}
 }
+
+/* ---------- v2.7: Arcade ---------- */
+.gamecard{display:flex;align-items:center;gap:13px;width:100%;text-align:left;
+  background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);
+  padding:15px;margin-bottom:10px;box-shadow:var(--shadow);transition:.15s}
+.gamecard:active{transform:scale(.98)}
+.gamecard .em{font-size:26px;flex:none}
+.gamecard b{display:block;font-size:15px}
+.gamecard span span{display:block;font-size:12px;color:var(--tx2)}
+.gamecard .best{font-size:11px !important;color:var(--gold) !important;font-weight:800;margin-top:2px}
+.arcadecard{background:linear-gradient(135deg,#12b5a5,#3a8bd8);border-radius:var(--r);padding:16px;
+  color:#fff;margin-bottom:12px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:12px;
+  width:100%;text-align:left;transition:.15s}
+.arcadecard:active{transform:scale(.98)}
+.arcadecard .em{font-size:26px;flex:none}
+.arcadecard b{display:block;font-size:15px}
+.arcadecard span{font-size:12px;opacity:.92}
+.memgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:auto 0}
+.memcard{aspect-ratio:3/4;border-radius:13px;border:2px solid var(--line);background:var(--acc);
+  color:#fff;font-size:22px;font-weight:800;padding:4px;transition:transform .25s, background .25s;
+  display:grid;place-items:center;line-height:1.2}
+.memcard.up{background:var(--bg2);color:var(--tx);font-size:10.5px;font-weight:600;border-color:var(--acc)}
+.memcard.up.term{font-weight:800;font-size:11.5px}
+.memcard.done{border-color:var(--ok);background:#e8f7ee;opacity:.65}
+.memcard:active{transform:scale(.95)}
+
+/* ---------- v2.8: Lexikon ---------- */
+.lexsearch{width:100%;background:var(--bg2);border:1.5px solid var(--line);border-radius:14px;
+  padding:12px 15px;outline:none;color:var(--tx);box-shadow:var(--shadow)}
+.lexsearch:focus{border-color:var(--acc)}
+.lexgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:420px){.lexgrid{grid-template-columns:1fr}}
+.lexcard{position:relative;overflow:hidden;text-align:left;background:var(--bg2);
+  border:1px solid var(--line);border-left:4px solid var(--wc);border-radius:15px;
+  padding:13px 13px 11px;box-shadow:var(--shadow);transition:.15s;display:flex;
+  flex-direction:column;gap:4px;min-height:104px}
+.lexcard:active{transform:scale(.98)}
+.lexcard b{font-size:14.5px;letter-spacing:-.2px;position:relative;z-index:1}
+.lexcard .lexdef{font-size:11.5px;color:var(--tx2);line-height:1.45;position:relative;z-index:1;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.lexcard .lexchip{font-size:9.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;
+  margin-top:auto;position:relative;z-index:1}
+.lexcard .lexletter{position:absolute;right:2px;top:-16px;font-size:74px;font-weight:800;
+  color:var(--wc);opacity:.07;pointer-events:none}
+.warnpair{background:#fdecec;border:1px solid #f3c6c8;border-radius:13px;padding:12px 14px}
+.warnpair .h{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--no);margin-bottom:4px}
+.warnpair p{font-size:13.5px;line-height:1.5;color:#7a3b3e}
+
+/* ---------- v2.9: Vergleiche ---------- */
+.subseg{display:flex;gap:6px;background:var(--bg4);border-radius:13px;padding:4px;margin:10px 0 14px}
+.subseg button{flex:1;padding:8px 6px;border-radius:10px;font-size:13.5px;font-weight:700;color:var(--tx2)}
+.subseg button.on{background:var(--bg2);color:var(--tx);box-shadow:var(--shadow)}
+.vslegend{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
+.vsitem{font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;
+  background:color-mix(in srgb, var(--wc) 12%, white);color:var(--wc);border:1px solid color-mix(in srgb, var(--wc) 30%, white)}
+.vsblock{margin-top:14px}
+.vsblock h4{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--tx3);
+  font-weight:800;margin-bottom:8px;border-bottom:1.5px dashed var(--line);padding-bottom:5px}
+.vsrow{display:grid;grid-template-columns:10px 118px 1fr;gap:9px;align-items:start;
+  padding:6px 0;font-size:12.5px;line-height:1.5}
+.vsrow .vsdot{width:8px;height:8px;border-radius:99px;margin-top:6px}
+.vsrow .vsname{font-weight:800;font-size:11.5px;line-height:1.35;padding-top:1px;overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto}
+.vsrow .vsval{color:var(--tx2)}
+@media(max-width:400px){.vsrow{grid-template-columns:10px 100px 1fr}}

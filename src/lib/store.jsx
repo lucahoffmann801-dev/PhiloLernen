@@ -28,6 +28,7 @@ function freshState() {
   return {
     xp: 0,
     lessonsDone: {}, bossDone: {}, cards: {}, checks: {}, terms: {},
+    arcade: { mill: 0, boss: {}, luege: 0, memory: null },
     dayXp: {}, dayStats: {}, questsAwarded: {},
     streak: 0, lastStreakDay: null, bestStreak: 0,
     freezesUsed: 0,          // sanfte Streak: 2 Schoner für Lücken-Tage
@@ -75,6 +76,13 @@ function merge(a, b) {
     out.cards[id] = out.cards[id] ? mergeCard(out.cards[id], c) : c;
   });
   out.checks = { ...(b.checks || {}), ...(a.checks || {}) };
+  const aa = a.arcade || {}, ba = b.arcade || {};
+  out.arcade = {
+    mill: Math.max(aa.mill ?? 0, ba.mill ?? 0),
+    boss: { ...(ba.boss || {}), ...(aa.boss || {}) },
+    luege: Math.max(aa.luege ?? 0, ba.luege ?? 0),
+    memory: aa.memory != null && ba.memory != null ? Math.min(aa.memory, ba.memory) : (aa.memory ?? ba.memory ?? null),
+  };
   out.terms = { ...(b.terms || {}) };
   Object.entries(a.terms || {}).forEach(([id, t]) => {
     const o = out.terms[id] || {};
@@ -225,6 +233,17 @@ export function StoreProvider({ children }) {
         });
       },
       quickXp(n) { up(st => addXp(st, n)); },
+      arcadeResult(patch, xp) {
+        up(st => {
+          const a = { mill: 0, boss: {}, luege: 0, memory: null, ...(st.arcade || {}) };
+          if (patch.mill != null) a.mill = Math.max(a.mill, patch.mill);
+          if (patch.bossWorld) a.boss = { ...a.boss, [patch.bossWorld]: true };
+          if (patch.luege != null) a.luege = Math.max(a.luege, patch.luege);
+          if (patch.memory != null) a.memory = a.memory == null ? patch.memory : Math.min(a.memory, patch.memory);
+          st.arcade = a;
+          return xp ? addXp(st, xp) : st;
+        });
+      },
       finishLesson(lessonId, bonus) {
         up(st => { st.lessonsDone = { ...st.lessonsDone, [lessonId]: true }; addXp(st, 10 + (bonus || 0)); return bump(st, "l"); });
       },

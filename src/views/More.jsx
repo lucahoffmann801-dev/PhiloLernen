@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import SpeakButton from "../lib/SpeakButton.jsx";
 import * as tts from "../lib/tts.js";
 import { findEsel } from "../lib/esel.js";
+import Lexikon from "./Lexikon.jsx";
 import { QUESTIONS } from "../data/questions.js";
 import { WORLDS } from "../data/content.js";
 import { TERMS, PAIRS } from "../data/begriffe.js";
@@ -10,14 +11,15 @@ import { REF } from "../data/ref.js";
 import { FORMAT, PLAN } from "../data/meta.js";
 
 export default function More({ toast, startPreset }) {
-  const [tab, setTab] = useState("ref");
+  const [tab, setTab] = useState("lex");
   return (
     <div className="view wrap">
       <div className="chips" style={{ marginBottom: 18 }}>
-        {[["ref", "Nachschlagen"], ["radar", "Radar"], ["spick", "Spickzettel"], ["plan", "Plan"], ["format", "Klausur"], ["sync", "Einstellungen"]].map(([t, l]) => (
+        {[["lex", "Lexikon"], ["ref", "Nachschlagen"], ["radar", "Radar"], ["spick", "Spickzettel"], ["plan", "Plan"], ["format", "Klausur"], ["sync", "Einstellungen"]].map(([t, l]) => (
           <button key={t} className={"chip" + (tab === t ? " on" : "")} onClick={() => setTab(t)}>{l}</button>
         ))}
       </div>
+      {tab === "lex" && <Lexikon />}
       {tab === "ref" && <Ref />}
       {tab === "radar" && <Radar startPreset={startPreset} />}
       {tab === "spick" && <Spick />}
